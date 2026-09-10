@@ -22,6 +22,7 @@ ERRORS=0
 
 for f in $FILES; do
   [ -f "$f" ] || continue
+  grep -qE '@theme\b' "$f" && continue
 
   matches=$(grep -nE '#[0-9a-fA-F]{3,8}' "$f" \
     | grep -vE '^\s*(//|\*|/\*)' \

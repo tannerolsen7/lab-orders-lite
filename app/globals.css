@@ -30,6 +30,11 @@
   --radius-xl: 0.75rem;
 }
 
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
 body {
   font-family:
     "Inter",

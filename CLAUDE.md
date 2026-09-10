@@ -192,6 +192,17 @@ prisma/
 - ONLY write a comment when the WHY is non-obvious — one line maximum
 - Use `cn()` (clsx + tailwind-merge) for conditional Tailwind class merging
 
+### Data display resilience
+
+Every text value displayed on a page must handle four cases:
+
+1. **Empty** — show a placeholder ("—", "Not provided", or an empty state)
+2. **Short** (1–2 characters) — must not break layout or look broken
+3. **Normal** — the happy path
+4. **Long** — truncate with ellipsis (`truncate` + `max-w-*`), never overflow the container
+
+This applies to table cells, card values, page headers, and any user-entered text. Use `truncate` on text elements and `min-w-0` on flex children. Wrap action buttons in `shrink-0` so they don't compress.
+
 ---
 
 ## Testing

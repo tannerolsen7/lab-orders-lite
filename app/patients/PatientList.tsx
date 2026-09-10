@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
   Dialog,
@@ -22,7 +22,9 @@ import { createPatient, updatePatient } from "./actions";
 const columns: Column<Patient>[] = [
   {
     header: "Name",
-    cell: (row) => formatPatientName(row),
+    cell: (row) => (
+      <span className="block max-w-48 truncate">{formatPatientName(row)}</span>
+    ),
   },
   {
     header: "Date of Birth",
@@ -30,13 +32,37 @@ const columns: Column<Patient>[] = [
   },
   {
     header: "Phone",
-    cell: (row) => row.phone ?? "—",
+    cell: (row) => (
+      <span className="block max-w-36 truncate">{row.phone ?? "—"}</span>
+    ),
   },
   {
     header: "Email",
-    cell: (row) => row.email ?? "—",
+    cell: (row) => (
+      <span className="block max-w-48 truncate">{row.email ?? "—"}</span>
+    ),
+  },
+  {
+    header: "",
+    cell: (row) => <EditButton patientId={row.id} />,
   },
 ];
+
+function EditButton({ patientId }: { patientId: string }) {
+  const router = useRouter();
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={(e) => {
+        e.stopPropagation();
+        router.push(`/patients?edit=${patientId}`);
+      }}
+    >
+      <Pencil className="h-4 w-4" />
+    </Button>
+  );
+}
 
 export function PatientList({ patients }: { patients: Patient[] }) {
   const router = useRouter();

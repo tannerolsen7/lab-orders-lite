@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isDateInPast, formatPatientName } from "./patient";
+import { isDateInPast, toUTCDate, formatPatientName } from "./patient";
 
 describe("isDateInPast", () => {
   it("returns true for a date in the past", () => {
@@ -15,6 +15,13 @@ describe("isDateInPast", () => {
   it("returns true for today", () => {
     const today = new Date().toISOString().split("T")[0];
     expect(isDateInPast(today)).toBe(true);
+  });
+});
+
+describe("toUTCDate", () => {
+  it("parses a date string as midnight UTC", () => {
+    const date = toUTCDate("2000-06-15");
+    expect(date.toISOString()).toBe("2000-06-15T00:00:00.000Z");
   });
 });
 

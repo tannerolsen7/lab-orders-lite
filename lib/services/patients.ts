@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { isDateInPast } from "@/lib/domain/patient";
+import { isDateInPast, toUTCDate } from "@/lib/domain/patient";
 import type { PatientInput } from "@/lib/validations/patient";
 
 export async function list() {
@@ -23,7 +23,7 @@ export async function create(data: PatientInput, createdById: string) {
     data: {
       firstName: data.firstName,
       lastName: data.lastName,
-      dateOfBirth: new Date(data.dateOfBirth + "T00:00:00"),
+      dateOfBirth: toUTCDate(data.dateOfBirth),
       phone: data.phone || null,
       email: data.email || null,
       createdById,
@@ -47,7 +47,7 @@ export async function update(
     data: {
       firstName: data.firstName,
       lastName: data.lastName,
-      dateOfBirth: new Date(data.dateOfBirth + "T00:00:00"),
+      dateOfBirth: toUTCDate(data.dateOfBirth),
       phone: data.phone || null,
       email: data.email || null,
       updatedById,

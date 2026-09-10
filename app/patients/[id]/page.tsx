@@ -54,7 +54,7 @@ export default async function PatientDetailPage({
           <CardContent className="space-y-3">
             <div>
               <p className="text-sm text-muted-foreground">Full name</p>
-              <p>{patient.firstName} {patient.lastName}</p>
+              <p>{formatPatientName(patient)}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Date of birth</p>

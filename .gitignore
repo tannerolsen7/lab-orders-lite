@@ -1,0 +1,39 @@
+# --- Local Claude Code harness (not part of submission) ---
+.claude/
+.agents/
+.mcp.json
+.claudeignore
+.husky/
+docs/engineering-system/
+docs/security/
+scripts/
+CLAUDE.md
+AGENTS.md
+CONTEXT.md
+PITFALLS.md
+STRATEGY.md
+TASKS.md
+BACKLOG.md
+LAST-SYNC.md
+skills-lock.json
+deploy-targets.yml
+.githooks/
+
+# --- Secrets / env ---
+.env
+.env.*
+!.env.example
+
+# --- OS / editor ---
+.DS_Store
+.vscode/
+.idea/
+
+# --- Common build / dep dirs ---
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo

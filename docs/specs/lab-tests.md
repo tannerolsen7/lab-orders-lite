@@ -67,7 +67,7 @@ Note: `priceDollars` is a string from the form input. The server action converts
 - `list(includeInactive?: boolean)` — returns active tests by default, ordered by name. Pass `true` to include retired tests.
 - `getById(id: string)` — returns test or throws. Includes inactive tests (needed for order history display).
 - `create(data: LabTestInput, createdById: string)` — creates row. Throws if `code` already exists (unique constraint).
-- `update(id: string, data: LabTestInput, updatedById: string)` — updates row and sets `updatedById`. Throws if `code` conflicts with another test.
+- `update(id: string, data: LabTestInput, updatedById: string)` — updates name, price, and turnaround. Code is immutable after creation — the update input excludes it. Sets `updatedById`. Throws if test not found.
 - `retire(id: string, updatedById: string)` — sets `active = false` and `updatedById`.
 - `reactivate(id: string, updatedById: string)` — sets `active = true` and `updatedById`.
 
@@ -85,6 +85,7 @@ Note: `priceDollars` is a string from the form input. The server action converts
 
 - No deleting lab tests. They're reference data pointed at by order items. The DB enforces this via `onDelete: Restrict` on OrderItem → LabTest. Retire instead.
 - `code` must be unique across all tests (active and inactive). A retired test's code is still reserved.
+- `code` is immutable after creation — the edit modal shows it as a read-only field.
 - Price must be positive (no free tests, no negative prices).
 - Turnaround hours must be a positive integer.
 

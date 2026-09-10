@@ -24,7 +24,7 @@ code organization, architecture decisions, and testing discipline — not featur
 |--------|---------|------------|
 | Patient | Person receiving lab work | firstName, lastName, dateOfBirth, phone?, email? |
 | LabTest | Catalog item that can be ordered | code (unique), name, priceCents, turnaroundHours, active |
-| Order | Request to run tests for a patient | patientId, status, createdById, updatedById? |
+| Order | Request to run tests for a patient | orderNumber (auto-increment), patientId, status, createdById, updatedById? |
 | OrderItem | One test within an order (frozen pricing) | orderId, labTestId, priceCentsSnapshot, turnaroundHoursSnapshot |
 | User | Staff member (stubbed) | name |
 
@@ -47,6 +47,7 @@ code organization, architecture decisions, and testing discipline — not featur
 - `cancelReason` is required when status = CANCELLED, null for all other statuses.
 - Lab tests are never hard-deleted — they are retired (`active = false`).
 - A retired test's code is still reserved (unique across active and inactive).
+- Lab test `code` is immutable after creation.
 
 ---
 
@@ -98,7 +99,8 @@ Migration path to real auth = swap one function call. Mentioned in README as a d
 - Lab tests: create, edit, list with client-side search (code + name), retire, reactivate
 - Orders: create (patient + N tests, transactional insert with snapshotting), detail view, list with filters (patient name client-side, status server-side), status transitions with state machine
 - Shared primitives: FormField, DataTable (card layout on mobile), SearchInput, EmptyState, money formatting, date formatting
-- Full responsive design: top nav with visible links on desktop, hamburger on mobile; tables convert to cards; modals go full-screen on mobile
+- Full responsive design: 76px sidebar icon rail on desktop, bottom tab bar on mobile; tables convert to cards; modals go full-screen on mobile
+- Dashboard stat cards on patients list (Total Patients, Active Orders, Pending Results, Revenue This Month)
 
 ### Out of scope (README "what I'd add with more time")
 
@@ -137,6 +139,9 @@ See seed data details in each feature spec:
 | Form architecture | Shared components (FormField, etc.) over config-driven | 3 forms with different behavior; abstraction not justified at this scale |
 | cancelReason enforcement | Zod `refine` + service validation enforce `cancelReason` only on cancelled; DB uses nullable column | Simple validation over a discriminated union type — clearer for a take-home |
 | Totals | Computed on read, not materialized | Negligible cost at demo scale |
+| Navigation | 76px sidebar icon rail (desktop), bottom tab bar (mobile) | Design system chose sidebar; better use of vertical space for data-heavy tables |
+| Order numbering | Auto-increment `orderNumber` for display, CUID stays as PK/URL param | Clinics reference orders by human-readable number, not system IDs |
+| Lab test code immutability | Code is read-only after creation | Code is a natural key referenced in order history; changing it would break human references |
 
 ---
 

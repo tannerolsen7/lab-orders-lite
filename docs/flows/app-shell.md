@@ -3,17 +3,18 @@
 ## Layout
 
 ### Desktop
-- Top nav bar, full width
-- Left: "Lab Orders Lite" branding (text)
-- Center/left: visible nav links — Patients, Lab Tests, Orders (workflow order)
-- Right: user badge showing current user name ("Dr. Test")
-- Active route visually highlighted
-- Main content area below, full width
+- 76px sidebar icon rail on the left, fixed
+- Nav items stacked vertically: icon + 9px label (Patients, Tests, Orders)
+- Active nav item: rgba(255,255,255,0.1) background + lime (#dcff9f) text/icon
+- Inactive: 35% white opacity
+- Bottom of sidebar: user avatar circle (gradient #dcff9f→#5cafb5) with initials "DT"
+- Background: #00272a (dark teal)
+- Main content area fills the remaining width, background #f7f5f1
 
 ### Mobile
-- Top nav bar with "Lab Orders Lite" branding and hamburger menu
-- Hamburger opens a drawer/sheet with nav links and user badge
-- Main content area below
+- Bottom tab bar with same nav items (Patients, Tests, Orders)
+- 44px minimum touch targets
+- No sidebar on mobile
 
 ## Navigation behavior
 - Clicking a nav link loads the list page for that feature
@@ -24,6 +25,7 @@
 - DataTable renders as a card layout below the mobile breakpoint
 - FormDialog renders full-screen on mobile, centered dialog on desktop
 - Search inputs stack vertically on mobile
+- Sticky sidebar (desktop) / fixed footer (mobile) for order creation summary
 - Dismiss modals via: backdrop click (desktop), Cancel button, X button, Escape key, browser back
 
 ## Empty states

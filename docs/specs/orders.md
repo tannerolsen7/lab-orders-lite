@@ -43,6 +43,7 @@ enum OrderStatus {
 
 model Order {
   id            String      @id @default(cuid())
+  orderNumber   Int         @default(autoincrement())
   patientId     String
   patient       Patient     @relation(fields: [patientId], references: [id])
   status        OrderStatus @default(PENDING)
@@ -56,7 +57,7 @@ model Order {
   updatedAt     DateTime    @updatedAt
 }
 ```
-`updatedAt` and `updatedById` track status transitions — the only mutation allowed after creation. The order's patient, tests, and snapshotted prices are immutable. `updatedById` is nullable because a newly created order has no updater yet.
+`orderNumber` is an auto-incrementing integer for human-readable display (e.g. "Order #1001"). The CUID remains the primary key and URL parameter. `updatedAt` and `updatedById` track status transitions — the only mutation allowed after creation. The order's patient, tests, and snapshotted prices are immutable. `updatedById` is nullable because a newly created order has no updater yet.
 
 ```prisma
 model OrderItem {

@@ -23,6 +23,7 @@ async function main() {
         dateOfBirth: new Date("1985-03-15"),
         phone: "(555) 234-5678",
         email: "maria.garcia@email.com",
+        createdById: user.id,
       },
     }),
     prisma.patient.upsert({
@@ -34,6 +35,7 @@ async function main() {
         lastName: "Chen",
         dateOfBirth: new Date("1992-11-02"),
         email: "james.chen@email.com",
+        createdById: user.id,
       },
     }),
     prisma.patient.upsert({
@@ -45,6 +47,7 @@ async function main() {
         lastName: "Thompson",
         dateOfBirth: new Date("1978-07-22"),
         phone: "(555) 876-5432",
+        createdById: user.id,
       },
     }),
   ]);

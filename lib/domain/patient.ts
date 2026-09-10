@@ -1,8 +1,10 @@
 export function isDateInPast(dateString: string): boolean {
-  const date = new Date(dateString + "T00:00:00");
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return date <= today;
+  const today = new Date().toISOString().split("T")[0];
+  return dateString <= today;
+}
+
+export function toUTCDate(dateString: string): Date {
+  return new Date(dateString + "T00:00:00Z");
 }
 
 export function formatPatientName(patient: {

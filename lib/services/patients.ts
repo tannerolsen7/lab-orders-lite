@@ -14,20 +14,27 @@ export async function getById(id: string) {
   });
 }
 
-export async function create(data: PatientInput, createdById: string) {
-  if (!isDateInPast(data.dateOfBirth)) {
+function toPatientData(data: PatientInput) {
+  return {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    dateOfBirth: toUTCDate(data.dateOfBirth),
+    phone: data.phone || null,
+    email: data.email || null,
+  };
+}
+
+function validateDob(dateOfBirth: string) {
+  if (!isDateInPast(dateOfBirth)) {
     throw new Error("Date of birth must be in the past");
   }
+}
+
+export async function create(data: PatientInput, createdById: string) {
+  validateDob(data.dateOfBirth);
 
   return prisma.patient.create({
-    data: {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      dateOfBirth: toUTCDate(data.dateOfBirth),
-      phone: data.phone || null,
-      email: data.email || null,
-      createdById,
-    },
+    data: { ...toPatientData(data), createdById },
   });
 }
 
@@ -36,21 +43,10 @@ export async function update(
   data: PatientInput,
   updatedById: string
 ) {
-  if (!isDateInPast(data.dateOfBirth)) {
-    throw new Error("Date of birth must be in the past");
-  }
-
-  await prisma.patient.findUniqueOrThrow({ where: { id } });
+  validateDob(data.dateOfBirth);
 
   return prisma.patient.update({
     where: { id },
-    data: {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      dateOfBirth: toUTCDate(data.dateOfBirth),
-      phone: data.phone || null,
-      email: data.email || null,
-      updatedById,
-    },
+    data: { ...toPatientData(data), updatedById },
   });
 }

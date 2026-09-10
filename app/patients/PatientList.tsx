@@ -16,17 +16,8 @@ import { SearchInput } from "@/components/shared/SearchInput";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { formatPatientName } from "@/lib/domain/patient";
 import { formatDate } from "@/lib/domain/dates";
-import { PatientForm } from "./PatientForm";
+import { PatientForm, type Patient } from "./PatientForm";
 import { createPatient, updatePatient } from "./actions";
-
-type Patient = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
-  phone: string | null;
-  email: string | null;
-};
 
 const columns: Column<Patient>[] = [
   {
@@ -110,35 +101,30 @@ export function PatientList({ patients }: { patients: Patient[] }) {
         />
       )}
 
-      <Dialog open={action === "new"} onOpenChange={() => closeDialog()}>
+      <Dialog
+        open={action === "new" || !!editingPatient}
+        onOpenChange={() => closeDialog()}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>New Patient</DialogTitle>
+            <DialogTitle>
+              {editingPatient ? "Edit Patient" : "New Patient"}
+            </DialogTitle>
             <DialogDescription>
-              Register a new patient in the system.
+              {editingPatient
+                ? "Update patient information."
+                : "Register a new patient in the system."}
             </DialogDescription>
           </DialogHeader>
-          <PatientForm action={createPatient} onSuccess={closeDialog} />
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={!!editingPatient} onOpenChange={() => closeDialog()}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Patient</DialogTitle>
-            <DialogDescription>
-              Update patient information.
-            </DialogDescription>
-          </DialogHeader>
-          {editingPatient && (
-            <PatientForm
-              patient={editingPatient}
-              action={(formData) =>
-                updatePatient(editingPatient.id, formData)
-              }
-              onSuccess={closeDialog}
-            />
-          )}
+          <PatientForm
+            patient={editingPatient}
+            action={
+              editingPatient
+                ? (formData) => updatePatient(editingPatient.id, formData)
+                : createPatient
+            }
+            onSuccess={closeDialog}
+          />
         </DialogContent>
       </Dialog>
     </div>

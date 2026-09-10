@@ -3,8 +3,9 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/shared/FormField";
+import type { ActionResult } from "./actions";
 
-type Patient = {
+export type Patient = {
   id: string;
   firstName: string;
   lastName: string;
@@ -12,8 +13,6 @@ type Patient = {
   phone: string | null;
   email: string | null;
 };
-
-type ActionResult = { ok: true } | { ok: false; error: string };
 
 export function PatientForm({
   patient,

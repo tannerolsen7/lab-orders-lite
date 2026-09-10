@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id @default(cuid())
+  name             String
+  createdAt        DateTime  @default(now())
+  createdOrders    Order[]   @relation("OrderCreatedBy")
+  updatedOrders    Order[]   @relation("OrderUpdatedBy")
+  updatedPatients  Patient[] @relation("PatientUpdatedBy")
+  updatedLabTests  LabTest[] @relation("LabTestUpdatedBy")
+}
+
+model Patient {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  dateOfBirth DateTime
+  phone       String?
+  email       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+  updatedBy   User?    @relation("PatientUpdatedBy", fields: [updatedById], references: [id])
+  orders      Order[]
+}
+
+model LabTest {
+  id              String      @id @default(cuid())
+  code            String      @unique
+  name            String
+  priceCents      Int
+  turnaroundHours Int
+  active          Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  updatedById     String?
+  updatedBy       User?       @relation("LabTestUpdatedBy", fields: [updatedById], references: [id])
+  orderItems      OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  orderNumber  Int         @unique
+  patientId    String
+  patient      Patient     @relation(fields: [patientId], references: [id])
+  status       OrderStatus @default(PENDING)
+  cancelReason String?
+  createdById  String
+  createdBy    User        @relation("OrderCreatedBy", fields: [createdById], references: [id])
+  updatedById  String?
+  updatedBy    User?       @relation("OrderUpdatedBy", fields: [updatedById], references: [id])
+  items        OrderItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model OrderItem {
+  id                      String   @id @default(cuid())
+  orderId                 String
+  order                   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  labTestId               String
+  labTest                 LabTest  @relation(fields: [labTestId], references: [id])
+  priceCentsSnapshot      Int
+  turnaroundHoursSnapshot Int
+  createdAt               DateTime @default(now())
+}

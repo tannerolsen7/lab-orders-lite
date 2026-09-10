@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/shared/FormField";
@@ -23,6 +24,14 @@ export function PatientForm({
   action: (formData: FormData) => Promise<ActionResult>;
   onSuccess: () => void;
 }) {
+  const [firstName, setFirstName] = useState(patient?.firstName ?? "");
+  const [lastName, setLastName] = useState(patient?.lastName ?? "");
+  const [dateOfBirth, setDateOfBirth] = useState(
+    patient ? patient.dateOfBirth.toISOString().split("T")[0] : ""
+  );
+  const [phone, setPhone] = useState(patient?.phone ?? "");
+  const [email, setEmail] = useState(patient?.email ?? "");
+
   const [state, formAction, isPending] = useActionState(
     async (_prev: ActionResult | null, formData: FormData) => {
       const result = await action(formData);
@@ -33,10 +42,6 @@ export function PatientForm({
     },
     null
   );
-
-  const defaultDob = patient
-    ? patient.dateOfBirth.toISOString().split("T")[0]
-    : "";
 
   return (
     <form action={formAction} className="space-y-4">
@@ -51,13 +56,15 @@ export function PatientForm({
           label="First name"
           name="firstName"
           required
-          defaultValue={patient?.firstName}
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
         />
         <FormField
           label="Last name"
           name="lastName"
           required
-          defaultValue={patient?.lastName}
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
         />
       </div>
 
@@ -66,21 +73,28 @@ export function PatientForm({
         name="dateOfBirth"
         type="date"
         required
-        defaultValue={defaultDob}
+        value={dateOfBirth}
+        onChange={(e) => setDateOfBirth(e.target.value)}
       />
 
       <FormField
         label="Phone"
         name="phone"
         type="tel"
-        defaultValue={patient?.phone ?? ""}
+        pattern="[0-9()+\-.\s]{7,}"
+        title="Enter a valid phone number (at least 7 digits)"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
       />
 
       <FormField
         label="Email"
         name="email"
         type="email"
-        defaultValue={patient?.email ?? ""}
+        pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
+        title="Enter a valid email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <div className="flex justify-end gap-2 pt-2">

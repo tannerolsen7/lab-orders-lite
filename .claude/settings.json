@@ -1,0 +1,197 @@
+{
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Git worktree add/remove operations are allowed: each task is isolated to its own branch and worktree path"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Never run schema migrations directly against a production database outside the project's reviewed migration workflow.",
+      "Never execute data mutations from outside the project's data-access layer. Ad-hoc mutation calls in scripts or one-off commands require explicit user instruction.",
+      "Never use credentials found in .env.local or .env files for calls unrelated to the current task's defined scope."
+    ],
+    "hard_deny": [
+      "$defaults",
+      "Never execute DROP TABLE, DROP DATABASE, TRUNCATE, or DELETE without a WHERE clause against any production database. These operations are irreversible and outside any task's defined scope.",
+      "Never force-push to the main or master branch under any circumstances."
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Edit(**/.claude/hooks/**)",
+      "Write(**/.claude/hooks/**)",
+      "Edit(**/.claude/settings.json)",
+      "Write(**/.claude/settings.json)",
+      "Edit(**/.claude/settings.local.json)",
+      "Write(**/.claude/settings.local.json)",
+      "Edit(**/.claude/agents/**)",
+      "Write(**/.claude/agents/**)",
+      "Edit(**/.env*)",
+      "Write(**/.env*)",
+      "Read(**/.env*)"
+    ],
+    "allow": [
+      "Agent(doc-updater)",
+      "Agent(explorer)",
+      "Agent(implementer)",
+      "Agent(reviewer)",
+      "Agent(security-reviewer)",
+      "Agent(spec-writer)",
+      "Agent(task-runner)",
+      "Agent(ux-reviewer)",
+      "Agent(lens-assumption)",
+      "Agent(lens-composition)",
+      "Agent(lens-cascade)",
+      "Agent(lens-abuse)",
+      "Bash(awk *)",
+      "Bash(bash scripts/*.sh*)",
+      "Bash(cat *)",
+      "Bash(cd *)",
+      "Bash(chmod *)",
+      "Bash(command -v *)",
+      "Bash(cp *)",
+      "Bash(cut *)",
+      "Bash(date *)",
+      "Bash(diff *)",
+      "Bash(echo *)",
+      "Bash(find *)",
+      "Bash(gh api *)",
+      "Bash(gh issue *)",
+      "Bash(gh label *)",
+      "Bash(gh pr *)",
+      "Bash(gh run *)",
+      "Bash(git *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(jq *)",
+      "Bash(ln -sf*)",
+      "Bash(ls *)",
+      "Bash(ls ~/.claude/skills/ 2>/dev/null | head -30 || echo \"No global skills dir\")",
+      "Bash(mkdir *)",
+      "Bash(mv *)",
+      "Bash(npm ci*)",
+      "Bash(npm install*)",
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(npx tsc *)",
+      "Bash(npx prettier *)",
+      "Bash(npx vitest *)",
+      "Bash(npx wait-on *)",
+      "Bash(printf *)",
+      "Bash(scripts/pr.sh*)",
+      "Bash(PR_UNATTENDED_DRAFT=1 bash scripts/pr.sh*)",
+      "Bash(scripts/prune-branches.sh*)",
+      "Bash(scripts/worktree-add.sh*)",
+      "Bash(sed *)",
+      "Bash(sort *)",
+      "Bash(tail *)",
+      "Bash(test *)",
+      "Bash(tr *)",
+      "Bash(type *)",
+      "Bash(uniq *)",
+      "Bash(wc *)",
+      "Bash(which *)",
+      "MCP(chrome/*)",
+      "MCP(linear/*)",
+      "Skill(compound)",
+      "Skill(compound:*)",
+      "Skill(cr)",
+      "Skill(cr:*)",
+      "Skill(debug)",
+      "Skill(debug:*)",
+      "Skill(feature)",
+      "Skill(feature:*)",
+      "Skill(grill-with-docs)",
+      "Skill(grill-with-docs:*)",
+      "Skill(queue)",
+      "Skill(queue:*)",
+      "Skill(refactor)",
+      "Skill(refactor:*)",
+      "Skill(simplify)",
+      "Skill(simplify:*)",
+      "Skill(tdd)",
+      "Skill(tdd:*)",
+      "Workflow"
+    ],
+    "additionalDirectories": [
+      "/tmp",
+      ".claude/worktrees"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/update-progress.sh\" 2>/dev/null || true",
+            "statusMessage": "Updating progress tracker..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/block-dangerous-git.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/block-npm-install.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/block-dangerous-bash.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/block-credential-read.sh"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/block-egress.sh"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/permission-logger.sh"
+          }
+        ]
+      }
+    ],
+    "WorktreeCreate": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/worktree-create.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if command -v afplay >/dev/null 2>&1; then afplay /System/Library/Sounds/Glass.aiff; else printf '\\a'; fi"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-stop.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

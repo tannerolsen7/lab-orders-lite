@@ -1,5 +1,8 @@
-# --- Local Claude Code harness (not part of submission) ---
-.claude/
+# --- Claude Code harness (track skills, agents, hooks, project docs) ---
+.claude/worktrees/
+.claude/activity/
+.claude/settings.local.json
+.claude/study-notes.md
 .agents/
 .mcp.json
 .claudeignore

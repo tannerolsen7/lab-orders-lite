@@ -3,7 +3,7 @@ import { formatDate } from "./dates";
 
 describe("formatDate", () => {
   it("formats a Date object to 'Mon DD, YYYY'", () => {
-    const date = new Date(2024, 0, 15);
+    const date = new Date("2024-01-15T00:00:00Z");
     expect(formatDate(date)).toBe("Jan 15, 2024");
   });
 
@@ -12,7 +12,12 @@ describe("formatDate", () => {
   });
 
   it("handles end-of-year dates", () => {
-    const date = new Date(2024, 11, 31);
+    const date = new Date("2024-12-31T00:00:00Z");
     expect(formatDate(date)).toBe("Dec 31, 2024");
+  });
+
+  it("does not shift date-only values across timezone boundaries", () => {
+    const date = new Date("2024-03-15T00:00:00Z");
+    expect(formatDate(date)).toBe("Mar 15, 2024");
   });
 });

@@ -121,6 +121,7 @@ describe("patientService.create", () => {
     expect(patient.firstName).toBe("John");
     expect(patient.lastName).toBe("Smith");
     expect(patient.phone).toBe("555-1234");
+    expect(patient.email).toBe("john@test.com");
     expect(patient.createdById).toBe(user.id);
 
     const fromDb = await prisma.patient.findUnique({
@@ -128,6 +129,25 @@ describe("patientService.create", () => {
     });
     expect(fromDb).not.toBeNull();
     expect(fromDb!.firstName).toBe("John");
+  });
+
+  it("stores null when phone or email is an empty string", async () => {
+    const { create } = await import("./patients");
+    const user = await createTestUser();
+
+    const patient = await create(
+      {
+        firstName: "No",
+        lastName: "Contact",
+        dateOfBirth: "1990-01-01",
+        phone: "555-0000",
+        email: "",
+      },
+      user.id
+    );
+
+    expect(patient.email).toBeNull();
+    expect(patient.phone).toBe("555-0000");
   });
 
   it("throws when date of birth is in the future", async () => {
@@ -175,7 +195,7 @@ describe("patientService.update", () => {
       {
         firstName: "New",
         lastName: "Name",
-        dateOfBirth: "1990-01-01",
+        dateOfBirth: "1985-06-15",
         email: "new@test.com",
       },
       user.id
@@ -183,6 +203,7 @@ describe("patientService.update", () => {
 
     expect(updated.firstName).toBe("New");
     expect(updated.email).toBe("new@test.com");
+    expect(updated.dateOfBirth.toISOString()).toContain("1985-06-15");
   });
 
   it("sets updatedById to the calling user's ID", async () => {

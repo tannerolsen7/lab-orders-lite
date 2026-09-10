@@ -1,6 +1,6 @@
 # Patients
 
-> **Status: DRAFT** — awaiting human approval.
+> **Status: COMPLETE**
 > Size: Small (straightforward CRUD, no complex business logic).
 
 ---
@@ -19,8 +19,8 @@ Patients are the people receiving lab work. Every order must reference a patient
 ## Done Looks Like
 
 - A list page at `/patients` showing all patients (name, DOB, contact info) with a search input that filters by first or last name client-side as the user types.
-- A create modal (Dialog) at `/patients/new` — intercepting route overlays the modal on the list page. Staff stay in context. URL is shareable and browser back closes the modal.
-- An edit modal (Dialog) at `/patients/[id]/edit` — intercepting route overlays the modal on the list page, pre-filled with the patient's current data.
+- A create modal (Dialog) opened via `?action=new` search param — dialog overlays the list page. Staff stay in context. URL is shareable and browser back closes the modal.
+- An edit modal (Dialog) opened via `?edit=[id]` search param — dialog overlays the list page, pre-filled with the patient's current data.
 - A detail view showing patient info and (once orders exist) their order history.
 - Service layer with `create`, `update`, `list`, `getById` — no direct Prisma calls from actions or components.
 - Zod validation at the server action boundary.
@@ -40,12 +40,14 @@ model Patient {
   email         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  createdById   String
+  createdBy     User     @relation("PatientCreatedBy", fields: [createdById], references: [id])
   updatedById   String?
-  updatedBy     User?    @relation(fields: [updatedById], references: [id])
+  updatedBy     User?    @relation("PatientUpdatedBy", fields: [updatedById], references: [id])
   orders        Order[]
 }
 ```
-`updatedById` is nullable because seed data and initial creation have no prior updater. Set on every update via the service layer.
+`createdById` is required — set on creation via the service layer. `updatedById` is nullable because initial creation has no prior updater. Set on every update via the service layer.
 
 **Zod boundary** — `lib/validations/patient.ts`:
 ```ts

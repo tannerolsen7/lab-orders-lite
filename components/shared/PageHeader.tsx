@@ -16,8 +16,8 @@ export function PageHeader({
         className
       )}
     >
-      <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-      {action}
+      <h1 className="min-w-0 max-w-lg truncate text-2xl font-semibold tracking-tight">{title}</h1>
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }

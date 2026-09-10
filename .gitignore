@@ -35,4 +35,5 @@ build/
 coverage/
 *.tsbuildinfo
 next-env.d.ts
-prisma/prisma/
+prisma/*.db
+prisma/*.db-journal

@@ -19,6 +19,7 @@ An order is a request to run one or more lab tests for a patient. This is the co
 ## Done Looks Like
 
 - A create page at `/orders/new` where the user selects a patient, picks one or more active lab tests, sees a running total and estimated ready date, and submits.
+- Simple form layout: patient dropdown, test checkboxes, summary section showing total and estimated ready date. No multi-step wizard, no autocomplete, no drag-and-drop.
 - On submit: all order items are inserted in a single transaction with snapshotted prices and turnaround hours from the lab test catalog at that moment.
 - An order detail page at `/orders/[id]` showing patient info, line items with snapshotted prices, total cost, estimated ready date, current status, and available status transitions. The page clearly communicates that the order cannot be modified after creation (e.g. "Tests and pricing are locked once an order is submitted").
 - A list page at `/orders` showing all orders with patient name, status, total, created date — filterable by patient name and by status.
@@ -57,6 +58,7 @@ model Order {
 ```
 `updatedAt` and `updatedById` track status transitions — the only mutation allowed after creation. The order's patient, tests, and snapshotted prices are immutable. `updatedById` is nullable because a newly created order has no updater yet.
 
+```prisma
 model OrderItem {
   id                      String   @id @default(cuid())
   orderId                 String
@@ -89,7 +91,7 @@ export const UpdateStatusSchema = z.object({
 - `create(data: { patientId, labTestIds, createdById })` — validates patient exists, validates all tests exist and are active, snapshots prices and turnaround hours, creates Order + OrderItems in a `$transaction`.
 - `getById(id: string)` — returns order with items, patient, and lab test details (for display names). Throws if not found.
 - `list(filters?: { patientName?: string, status?: OrderStatus })` — returns all orders with patient name and item count. Client-side filtering by patient name; status filter applied server-side (it's an enum match, not a text search).
-- `updateStatus(id: string, status: OrderStatus, cancelReason?: string)` — validates transition is allowed via domain util, updates status. Sets `cancelReason` if cancelling.
+- `updateStatus(id: string, status: OrderStatus, updatedById: string, cancelReason?: string)` — validates transition is allowed via domain util, updates status and `updatedById`. Sets `cancelReason` if cancelling. Throws on invalid transition.
 
 **Server actions** — `app/orders/actions.ts`:
 - `createOrder(formData)` — parses with Zod, calls service, redirects to new order's detail page.
@@ -110,15 +112,7 @@ Computed fields:
 - `computeTotalCents(items: { priceCentsSnapshot: number }[]): number` — sum of snapshotted prices.
 - `computeEstimatedReadyDate(orderCreatedAt: Date, items: { turnaroundHoursSnapshot: number }[]): Date` — `orderCreatedAt` + max turnaround hours across all items.
 
-Discriminated union (domain type, not DB):
-```ts
-type DomainOrder =
-  | { status: "PENDING"; cancelReason?: never }
-  | { status: "IN_PROGRESS"; cancelReason?: never }
-  | { status: "COMPLETED"; cancelReason?: never }
-  | { status: "CANCELLED"; cancelReason: string }
-```
-Used in the service/UI layer to enforce that `cancelReason` is only accessible on cancelled orders. The DB uses a nullable `cancelReason` column — the domain type is the enforcement layer.
+The `cancelReason` invariant (required when CANCELLED, null otherwise) is enforced by the Zod `UpdateStatusSchema` refine and a simple check in the service's `updateStatus`. No separate domain type needed — the Zod schema and service validation are the enforcement layer.
 
 ## Constraints
 

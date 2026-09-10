@@ -27,8 +27,10 @@ Before building any feature, the app needs a project skeleton (Next.js, Prisma, 
 
 ### Form infrastructure
 - **`FormField` wrapper** — label, input, and validation error message in one component. Accepts a field name and renders the error from server action state. Used by every create/edit form.
-- **`FormDialog` or `FormPage` pattern** — a consistent container for create/edit forms with a submit button, loading state, and error display. Both patients and lab tests use the same structural pattern.
+- **`FormDialog` pattern** — a Dialog-based form container for create/edit flows (patients, lab tests). Uses App Router intercepting routes so modals are URL-reachable (`/patients/new` overlays the list), browser back closes them, and hard refresh still works. Consistent submit button, loading state, and error display.
+- **`FormPage` pattern** — a page-based form container for complex create flows (orders). Used when the form has enough surface area (dropdowns, checkboxes, live previews) that a modal would feel cramped.
 - **Server action error handling** — a shared pattern for returning `{ ok: true, data }` or `{ ok: false, errors }` from server actions, consumed by forms to display field-level or form-level errors.
+- **`dollarsToCents(dollars: string): number`** — parses dollar input string to integer cents. Used by lab test and order forms on submit.
 
 ### List infrastructure
 - **`DataTable` component** — a reusable table with column definitions. Each feature passes its own columns and data. Not a full data-grid library — just a thin wrapper around a `<table>` with consistent styling.
@@ -37,7 +39,6 @@ Before building any feature, the app needs a project skeleton (Next.js, Prisma, 
 ### Display infrastructure
 - **`formatDate(date: Date | string): string`** — formats a date for display (e.g. "Jan 15, 1990"). Used everywhere dates appear.
 - **`centsToDollars(cents: number): string`** — formats integer cents as dollar string for display. Used by lab tests and orders.
-- **`dollarsToCents(dollars: string): number`** — parses dollar input string to integer cents. Used by lab test and order forms.
 - **`EmptyState` component** — shown when a list has no items or search returns no matches. Consistent across all list pages.
 
 ### Layout

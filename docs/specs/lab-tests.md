@@ -20,8 +20,8 @@ Lab tests are the catalog of available tests that can be ordered for a patient (
 
 - A list page at `/tests` showing all active lab tests (code, name, price, turnaround time) with a client-side search input that filters by code or name as the user types.
 - A toggle or filter to show retired (inactive) tests alongside active ones.
-- A create page/modal where a user enters code, name, price (in dollars — converted to cents on submit), and turnaround time in hours.
-- An edit page/modal pre-filled with the test's current data.
+- A create modal (Dialog) at `/tests/new` — intercepting route overlays the modal on the list page. Staff stay in context. URL is shareable and browser back closes the modal.
+- An edit modal (Dialog) at `/tests/[id]/edit` — intercepting route overlays the modal on the list page, pre-filled with the test's current data.
 - A retire action that sets `active = false` — no hard delete.
 - A reactivate action that sets `active = true` — a retired test can be brought back.
 - Price displayed as dollars throughout the UI, stored as integer cents in the DB.
@@ -55,7 +55,9 @@ model LabTest {
 export const LabTestSchema = z.object({
   code: z.string().trim().min(1, "Code is required").toUpperCase(),
   name: z.string().trim().min(1, "Name is required"),
-  priceDollars: z.string().regex(/^\d+(\.\d{1,2})?$/, "Enter a valid price"),
+  priceDollars: z.string().regex(/^\d+(\.\d{1,2})?$/, "Enter a valid price").refine(
+    (val) => parseFloat(val) > 0, "Price must be greater than zero"
+  ),
   turnaroundHours: z.coerce.number().int().positive("Turnaround time must be a positive whole number"),
 })
 ```
@@ -64,10 +66,10 @@ Note: `priceDollars` is a string from the form input. The server action converts
 **Service** — `lib/services/lab-tests.ts`:
 - `list(includeInactive?: boolean)` — returns active tests by default, ordered by name. Pass `true` to include retired tests.
 - `getById(id: string)` — returns test or throws. Includes inactive tests (needed for order history display).
-- `create(data: LabTestInput)` — creates row. Fails if `code` already exists (unique constraint).
-- `update(id: string, data: LabTestInput)` — updates row. Fails if `code` conflicts with another test.
-- `retire(id: string)` — sets `active = false`.
-- `reactivate(id: string)` — sets `active = true`.
+- `create(data: LabTestInput, createdById: string)` — creates row. Throws if `code` already exists (unique constraint).
+- `update(id: string, data: LabTestInput, updatedById: string)` — updates row and sets `updatedById`. Throws if `code` conflicts with another test.
+- `retire(id: string, updatedById: string)` — sets `active = false` and `updatedById`.
+- `reactivate(id: string, updatedById: string)` — sets `active = true` and `updatedById`.
 
 **Server actions** — `app/tests/actions.ts`:
 - `createLabTest(formData)` — parses with Zod, converts dollars to cents, calls service, redirects to test list.

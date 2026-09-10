@@ -19,8 +19,8 @@ Patients are the people receiving lab work. Every order must reference a patient
 ## Done Looks Like
 
 - A list page at `/patients` showing all patients (name, DOB, contact info) with separate first name and last name search inputs that filter client-side as the user types. Both filters apply together (AND).
-- A create page/modal where a user enters first name, last name, date of birth, and at least one contact method (phone or email or both).
-- An edit page/modal pre-filled with the patient's current data.
+- A create modal (Dialog) at `/patients/new` — intercepting route overlays the modal on the list page. Staff stay in context. URL is shareable and browser back closes the modal.
+- An edit modal (Dialog) at `/patients/[id]/edit` — intercepting route overlays the modal on the list page, pre-filled with the patient's current data.
 - A detail view showing patient info and (once orders exist) their order history.
 - Service layer with `create`, `update`, `list`, `getById` — no direct Prisma calls from actions or components.
 - Zod validation at the server action boundary.
@@ -52,7 +52,7 @@ model Patient {
 export const PatientSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required"),
   lastName: z.string().trim().min(1, "Last name is required"),
-  dateOfBirth: z.string().date(), // ISO date string, validated as past date in domain
+  dateOfBirth: z.string().date(), // ISO date string; past-date check runs in the service via domain util
   phone: z.string().trim().optional().or(z.literal("")),
   email: z.string().email().trim().optional().or(z.literal("")),
 }).refine(
@@ -64,8 +64,8 @@ export const PatientSchema = z.object({
 **Service** — `lib/services/patients.ts`:
 - `list()` — returns all patients, ordered by last name. No server-side filtering — search is client-side at this scale.
 - `getById(id: string)` — returns patient or throws.
-- `create(data: PatientInput)` — validates DOB is in past, creates row.
-- `update(id: string, data: PatientInput)` — validates DOB is in past, updates row.
+- `create(data: PatientInput, createdById: string)` — validates DOB is in past via domain util, creates row.
+- `update(id: string, data: PatientInput, updatedById: string)` — validates DOB is in past via domain util, updates row and sets `updatedById`.
 
 **Server actions** — `app/patients/actions.ts`:
 - `createPatient(formData)` — parses with Zod, calls service, redirects to patient list.

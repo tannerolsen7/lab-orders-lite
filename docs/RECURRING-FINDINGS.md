@@ -24,10 +24,18 @@ to PITFALLS.md or ADRs when they reach 3+ occurrences.
 ### hand-rolled-type-drift
 
 - Category: TS Discipline
+- Occurrences: 2
+- Last seen: 2026-09-10
+- Files: `app/patients/PatientForm.tsx:8`, `app/tests/LabTestForm.tsx:10`
+- Description: Manual entity types in form components don't track Prisma schema changes. Should derive from Prisma types.
+
+### silent-action-result-discard
+
+- Category: Domain Safety
 - Occurrences: 1
 - Last seen: 2026-09-10
-- Files: `app/patients/PatientForm.tsx:8`
-- Description: Manual `Patient` type in component doesn't track Prisma schema changes. Should derive from Prisma types.
+- Files: `app/tests/LabTestList.tsx:101-109`
+- Description: Server action return value (ActionResult) discarded without checking. Failed mutations show no error feedback to the user.
 
 ### catch-all-as-404
 

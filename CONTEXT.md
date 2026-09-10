@@ -36,6 +36,7 @@ code organization, architecture decisions, and testing discipline — not featur
 - OrderItem → Order (many-to-one, `onDelete: Cascade`)
 - OrderItem → LabTest (many-to-one, `onDelete: Restrict`)
 - Patient → User via `updatedById` (many-to-one, nullable)
+- LabTest → User via `createdById` (many-to-one)
 - LabTest → User via `updatedById` (many-to-one, nullable)
 
 ### Invariants

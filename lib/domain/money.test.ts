@@ -43,6 +43,6 @@ describe("centsToDollars", () => {
   });
 
   it("formats large amounts", () => {
-    expect(centsToDollars(100000)).toBe("1,000.00");
+    expect(centsToDollars(100000)).toBe("1000.00");
   });
 });

@@ -20,8 +20,8 @@ Lab tests are the catalog of available tests that can be ordered for a patient (
 
 - A list page at `/tests` showing all active lab tests (code, name, price, turnaround time) with a client-side search input that filters by code or name as the user types.
 - A toggle or filter to show retired (inactive) tests alongside active ones.
-- A create modal (Dialog) at `/tests/new` — intercepting route overlays the modal on the list page. Staff stay in context. URL is shareable and browser back closes the modal.
-- An edit modal (Dialog) at `/tests/[id]/edit` — intercepting route overlays the modal on the list page, pre-filled with the test's current data.
+- A create modal (Dialog) opened via `?action=new` query param — overlays the modal on the list page. Staff stay in context.
+- An edit modal (Dialog) opened via `?edit=<id>` query param — overlays the modal on the list page, pre-filled with the test's current data.
 - A retire action that sets `active = false` — no hard delete.
 - A reactivate action that sets `active = true` — a retired test can be brought back.
 - Price displayed as dollars throughout the UI, stored as integer cents in the DB.
@@ -43,12 +43,14 @@ model LabTest {
   active          Boolean     @default(true)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+  createdById     String
+  createdBy       User        @relation(fields: [createdById], references: [id])
   updatedById     String?
   updatedBy       User?       @relation(fields: [updatedById], references: [id])
   orderItems      OrderItem[]
 }
 ```
-`updatedById` is nullable because seed data and initial creation have no prior updater. Set on every update (including retire/reactivate) via the service layer.
+`createdById` is required — set on creation via the service layer. `updatedById` is nullable because initial creation has no prior updater. Set on every update (including retire/reactivate) via the service layer.
 
 **Zod boundary** — `lib/validations/lab-test.ts`:
 ```ts

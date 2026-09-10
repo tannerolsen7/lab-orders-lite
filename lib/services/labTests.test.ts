@@ -180,8 +180,8 @@ describe("labTestService.create", () => {
     const fromDb = await prisma.labTest.findUnique({
       where: { id: test.id },
     });
-    expect(fromDb).not.toBeNull();
-    expect(fromDb!.code).toBe("CBC");
+    if (!fromDb) throw new Error("expected fromDb");
+    expect(fromDb.code).toBe("CBC");
   });
 
   it("sets createdById to the calling user's ID", async () => {
@@ -431,6 +431,15 @@ describe("labTestService.retire", () => {
 
     expect(result.active).toBe(false);
   });
+
+  it("throws when lab test ID does not exist", async () => {
+    const { retire } = await import("./labTests");
+    const user = await createTestUser();
+
+    await expect(retire("nonexistent-id", user.id)).rejects.toThrow(
+      "Lab test not found"
+    );
+  });
 });
 
 describe("labTestService.reactivate", () => {
@@ -498,5 +507,14 @@ describe("labTestService.reactivate", () => {
     const result = await reactivate(existing.id, user.id);
 
     expect(result.active).toBe(true);
+  });
+
+  it("throws when lab test ID does not exist", async () => {
+    const { reactivate } = await import("./labTests");
+    const user = await createTestUser();
+
+    await expect(reactivate("nonexistent-id", user.id)).rejects.toThrow(
+      "Lab test not found"
+    );
   });
 });

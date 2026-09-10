@@ -99,13 +99,15 @@ export function LabTestList({ labTests }: { labTests: LabTest[] }) {
 
   function handleRetire(id: string) {
     startTransition(async () => {
-      await retireLabTest(id);
+      const result = await retireLabTest(id);
+      if (!result.ok) window.alert(result.error);
     });
   }
 
   function handleReactivate(id: string) {
     startTransition(async () => {
-      await reactivateLabTest(id);
+      const result = await reactivateLabTest(id);
+      if (!result.ok) window.alert(result.error);
     });
   }
 

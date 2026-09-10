@@ -54,33 +54,63 @@ export async function update(
   data: UpdateInput,
   updatedById: string
 ) {
-  return prisma.labTest.update({
-    where: { id },
-    data: {
-      name: data.name,
-      priceCents: data.priceCents,
-      turnaroundHours: data.turnaroundHours,
-      updatedById,
-    },
-  });
+  try {
+    return await prisma.labTest.update({
+      where: { id },
+      data: {
+        name: data.name,
+        priceCents: data.priceCents,
+        turnaroundHours: data.turnaroundHours,
+        updatedById,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2025"
+    ) {
+      throw new Error("Lab test not found");
+    }
+    throw e;
+  }
 }
 
 export async function retire(id: string, updatedById: string) {
-  return prisma.labTest.update({
-    where: { id },
-    data: {
-      active: false,
-      updatedById,
-    },
-  });
+  try {
+    return await prisma.labTest.update({
+      where: { id },
+      data: {
+        active: false,
+        updatedById,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2025"
+    ) {
+      throw new Error("Lab test not found");
+    }
+    throw e;
+  }
 }
 
 export async function reactivate(id: string, updatedById: string) {
-  return prisma.labTest.update({
-    where: { id },
-    data: {
-      active: true,
-      updatedById,
-    },
-  });
+  try {
+    return await prisma.labTest.update({
+      where: { id },
+      data: {
+        active: true,
+        updatedById,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2025"
+    ) {
+      throw new Error("Lab test not found");
+    }
+    throw e;
+  }
 }

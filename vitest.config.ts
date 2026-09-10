@@ -5,6 +5,11 @@ export default defineConfig({
   test: {
     globals: true,
     fileParallelism: false,
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      ".claude/worktrees/**",
+    ],
   },
   resolve: {
     alias: {

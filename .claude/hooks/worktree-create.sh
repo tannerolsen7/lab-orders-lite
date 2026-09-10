@@ -57,4 +57,11 @@ if [ -f "$WORKTREE/package.json" ] && [ -d "$WORKTREE/.husky" ]; then
   }
 fi
 
+# Bootstrap the database — SQLite relative paths resolve per-worktree, so each gets its own.
+if [ -f "$WORKTREE/prisma/schema.prisma" ] && [ -d "$WORKTREE/node_modules" ]; then
+  ( cd "$WORKTREE" && npx prisma generate && npx prisma migrate deploy && npx prisma db seed ) >&2 || {
+    echo "worktree-create: database bootstrap failed — run 'npx prisma migrate deploy && npx prisma db seed' manually" >&2
+  }
+fi
+
 echo "$WORKTREE"

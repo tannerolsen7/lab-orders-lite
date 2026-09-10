@@ -15,6 +15,7 @@ model User {
   updatedOrders    Order[]   @relation("OrderUpdatedBy")
   createdPatients  Patient[] @relation("PatientCreatedBy")
   updatedPatients  Patient[] @relation("PatientUpdatedBy")
+  createdLabTests  LabTest[] @relation("LabTestCreatedBy")
   updatedLabTests  LabTest[] @relation("LabTestUpdatedBy")
 }
 
@@ -43,6 +44,8 @@ model LabTest {
   active          Boolean     @default(true)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+  createdById     String
+  createdBy       User        @relation("LabTestCreatedBy", fields: [createdById], references: [id])
   updatedById     String?
   updatedBy       User?       @relation("LabTestUpdatedBy", fields: [updatedById], references: [id])
   orderItems      OrderItem[]

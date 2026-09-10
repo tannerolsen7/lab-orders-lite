@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Pencil } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { formatPatientName } from "@/lib/domain/patient";
 import { formatDate } from "@/lib/domain/dates";
 import * as patientService from "@/lib/services/patients";
+import { PatientDetailEdit } from "./PatientDetailEdit";
 
 export default async function PatientDetailPage({
   params,
@@ -26,14 +26,7 @@ export default async function PatientDetailPage({
     <div>
       <PageHeader
         title={formatPatientName(patient)}
-        action={
-          <Link href={`/patients?edit=${patient.id}`}>
-            <Button variant="outline" size="sm">
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit
-            </Button>
-          </Link>
-        }
+        action={<PatientDetailEdit patient={patient} />}
       />
 
       <div className="mb-6">
@@ -54,7 +47,7 @@ export default async function PatientDetailPage({
           <CardContent className="space-y-3">
             <div>
               <p className="text-sm text-muted-foreground">Full name</p>
-              <p>{formatPatientName(patient)}</p>
+              <p className="truncate">{formatPatientName(patient)}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Date of birth</p>
@@ -70,11 +63,11 @@ export default async function PatientDetailPage({
           <CardContent className="space-y-3">
             <div>
               <p className="text-sm text-muted-foreground">Phone</p>
-              <p>{patient.phone ?? "Not provided"}</p>
+              <p className="truncate">{patient.phone ?? "Not provided"}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Email</p>
-              <p>{patient.email ?? "Not provided"}</p>
+              <p className="truncate">{patient.email ?? "Not provided"}</p>
             </div>
           </CardContent>
         </Card>

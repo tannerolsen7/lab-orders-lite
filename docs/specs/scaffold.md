@@ -58,4 +58,3 @@ Before building any feature, the app needs a project skeleton (Next.js, Prisma, 
 | Toast/notification system | Server actions redirect or revalidate — no need for toast feedback at this scale. Would add for async operations. |
 | Global error boundary | Next.js `error.tsx` convention handles this. No custom error UI beyond that. |
 | Dark mode | Single theme. Would add via shadcn's CSS variable theming. |
-| Responsive / mobile layout | Desktop-first for a staff-facing lab tool. Would add responsive breakpoints for tablet use in clinics. |

@@ -94,10 +94,11 @@ Migration path to real auth = swap one function call. Mentioned in README as a d
 
 ### In scope
 
-- Patients: create, edit, list with separate client-side search inputs (first name, last name, AND logic)
+- Patients: create, edit, list with client-side search (first or last name)
 - Lab tests: create, edit, list with client-side search (code + name), retire, reactivate
 - Orders: create (patient + N tests, transactional insert with snapshotting), detail view, list with filters (patient name client-side, status server-side), status transitions with state machine
-- Shared primitives: FormField, DataTable, SearchInput, EmptyState, money formatting, date formatting
+- Shared primitives: FormField, DataTable (card layout on mobile), SearchInput, EmptyState, money formatting, date formatting
+- Full responsive design: top nav with visible links on desktop, hamburger on mobile; tables convert to cards; modals go full-screen on mobile
 
 ### Out of scope (README "what I'd add with more time")
 
@@ -110,7 +111,6 @@ Migration path to real auth = swap one function call. Mentioned in README as a d
 - Config-driven form generator (3 forms with different behavior — shared components over abstraction at this scale)
 - Offline support (service worker caching, optimistic UI, queue-and-sync for field environments)
 - Dark mode
-- Responsive / mobile layout
 - Duplicate patient detection
 - Server-side search (client-side is instant at demo scale)
 

@@ -19,9 +19,9 @@ An order is a request to run one or more lab tests for a patient. This is the co
 ## Done Looks Like
 
 - A create page at `/orders/new` where the user selects a patient, picks one or more active lab tests, sees a running total and estimated ready date, and submits.
-- Simple form layout: patient dropdown, test checkboxes, summary section showing total and estimated ready date. No multi-step wizard, no autocomplete, no drag-and-drop.
+- Simple form layout: searchable patient combobox, test checkboxes with search filter, summary section showing selected tests, total, and estimated ready date. No multi-step wizard, no drag-and-drop.
 - On submit: all order items are inserted in a single transaction with snapshotted prices and turnaround hours from the lab test catalog at that moment.
-- An order detail page at `/orders/[id]` showing patient info, line items with snapshotted prices, total cost, estimated ready date, current status, and available status transitions. The page clearly communicates that the order cannot be modified after creation (e.g. "Tests and pricing are locked once an order is submitted").
+- An order detail page at `/orders/[id]` showing patient info, status with transition buttons, total cost, estimated ready date, and line items with snapshotted prices. No edit actions on order content — the absence of edit controls communicates immutability.
 - A list page at `/orders` showing all orders with patient name, status, total, created date — filterable by patient name and by status.
 - Status transitions enforced by a state machine: only valid transitions are available as actions on the detail page.
 - Cancelling an order requires a reason.

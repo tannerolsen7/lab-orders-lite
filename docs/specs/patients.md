@@ -18,7 +18,7 @@ Patients are the people receiving lab work. Every order must reference a patient
 
 ## Done Looks Like
 
-- A list page at `/patients` showing all patients (name, DOB, contact info) with separate first name and last name search inputs that filter client-side as the user types. Both filters apply together (AND).
+- A list page at `/patients` showing all patients (name, DOB, contact info) with a search input that filters by first or last name client-side as the user types.
 - A create modal (Dialog) at `/patients/new` — intercepting route overlays the modal on the list page. Staff stay in context. URL is shareable and browser back closes the modal.
 - An edit modal (Dialog) at `/patients/[id]/edit` — intercepting route overlays the modal on the list page, pre-filled with the patient's current data.
 - A detail view showing patient info and (once orders exist) their order history.

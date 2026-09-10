@@ -225,7 +225,7 @@ describe("labTestService.create", () => {
         },
         user.id
       )
-    ).rejects.toThrow();
+    ).rejects.toThrow("A lab test with this code already exists.");
   });
 });
 

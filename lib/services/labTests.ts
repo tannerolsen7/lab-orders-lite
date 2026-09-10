@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 
 export async function list(includeInactive?: boolean) {
@@ -21,15 +22,25 @@ interface CreateInput {
 }
 
 export async function create(data: CreateInput, createdById: string) {
-  return prisma.labTest.create({
-    data: {
-      code: data.code,
-      name: data.name,
-      priceCents: data.priceCents,
-      turnaroundHours: data.turnaroundHours,
-      createdById,
-    },
-  });
+  try {
+    return await prisma.labTest.create({
+      data: {
+        code: data.code,
+        name: data.name,
+        priceCents: data.priceCents,
+        turnaroundHours: data.turnaroundHours,
+        createdById,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2002"
+    ) {
+      throw new Error("A lab test with this code already exists.");
+    }
+    throw e;
+  }
 }
 
 interface UpdateInput {

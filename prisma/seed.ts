@@ -123,6 +123,7 @@ async function main() {
     update: {},
     create: {
       id: "order-completed",
+      orderNumber: 1,
       patientId: patients[0].id,
       status: OrderStatus.COMPLETED,
       createdById: user.id,
@@ -150,6 +151,7 @@ async function main() {
     update: {},
     create: {
       id: "order-in-progress",
+      orderNumber: 3,
       patientId: patients[1].id,
       status: OrderStatus.IN_PROGRESS,
       createdById: user.id,
@@ -182,6 +184,7 @@ async function main() {
     update: {},
     create: {
       id: "order-cancelled",
+      orderNumber: 2,
       patientId: patients[0].id,
       status: OrderStatus.CANCELLED,
       cancelReason: "Patient requested cancellation — duplicate order",

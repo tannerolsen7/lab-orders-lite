@@ -8,9 +8,7 @@ describe("formatDate", () => {
   });
 
   it("formats an ISO date string", () => {
-    expect(formatDate("2024-06-01T00:00:00.000Z")).toMatch(
-      /Jun \d{1,2}, 2024/
-    );
+    expect(formatDate("2024-06-15T12:00:00.000Z")).toBe("Jun 15, 2024");
   });
 
   it("handles end-of-year dates", () => {

@@ -6,7 +6,6 @@
 .husky/
 docs/engineering-system/
 docs/security/
-scripts/
 AGENTS.md
 PITFALLS.md
 STRATEGY.md

@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "postinstall": "prisma generate",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:unit": "vitest run"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

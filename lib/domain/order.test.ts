@@ -100,4 +100,10 @@ describe("computeEstimatedReadyDate", () => {
     const result = computeEstimatedReadyDate(created, items);
     expect(result).toEqual(new Date("2026-09-01T22:00:00Z"));
   });
+
+  it("returns the creation date for empty items", () => {
+    const created = new Date("2026-09-01T10:00:00Z");
+    const result = computeEstimatedReadyDate(created, []);
+    expect(result).toEqual(new Date("2026-09-01T10:00:00Z"));
+  });
 });

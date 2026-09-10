@@ -1,4 +1,4 @@
-import type { OrderStatus } from "@prisma/client";
+export type OrderStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
 
 const ORDER_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   PENDING: ["IN_PROGRESS", "CANCELLED"],
@@ -30,6 +30,7 @@ export function computeEstimatedReadyDate(
   orderCreatedAt: Date,
   items: { turnaroundHoursSnapshot: number }[]
 ): Date {
+  if (items.length === 0) return new Date(orderCreatedAt);
   const maxHours = Math.max(
     ...items.map((item) => item.turnaroundHoursSnapshot)
   );

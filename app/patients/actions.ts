@@ -48,7 +48,7 @@ export async function createPatient(formData: FormData): Promise<ActionResult> {
   return { ok: true };
 }
 
-const idSchema = z.string().cuid();
+const idSchema = z.string().min(1);
 
 export async function updatePatient(
   id: string,

@@ -62,6 +62,7 @@ async function main() {
         name: "Complete Blood Count",
         priceCents: 3000,
         turnaroundHours: 24,
+        createdById: user.id,
       },
     }),
     prisma.labTest.upsert({
@@ -73,6 +74,7 @@ async function main() {
         name: "Lipid Panel",
         priceCents: 4500,
         turnaroundHours: 48,
+        createdById: user.id,
       },
     }),
     prisma.labTest.upsert({
@@ -84,6 +86,7 @@ async function main() {
         name: "Vitamin D, 25-Hydroxy",
         priceCents: 5500,
         turnaroundHours: 72,
+        createdById: user.id,
       },
     }),
     prisma.labTest.upsert({
@@ -95,6 +98,7 @@ async function main() {
         name: "Urinalysis",
         priceCents: 2000,
         turnaroundHours: 12,
+        createdById: user.id,
       },
     }),
     prisma.labTest.upsert({
@@ -106,6 +110,7 @@ async function main() {
         name: "Thyroid Stimulating Hormone",
         priceCents: 4000,
         turnaroundHours: 36,
+        createdById: user.id,
       },
     }),
     prisma.labTest.upsert({
@@ -117,6 +122,7 @@ async function main() {
         name: "Hemoglobin A1c",
         priceCents: 3500,
         turnaroundHours: 24,
+        createdById: user.id,
       },
     }),
   ]);

@@ -1,6 +1,12 @@
+import type { Patient as PrismaPatient } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { isDateInPast, toUTCDate } from "@/lib/domain/patient";
 import type { PatientInput } from "@/lib/validations/patient";
+
+export type PatientSummary = Pick<
+  PrismaPatient,
+  "id" | "firstName" | "lastName" | "dateOfBirth" | "phone" | "email"
+>;
 
 export async function list() {
   return prisma.patient.findMany({

@@ -1,12 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { PrismaClient } from "@prisma/client";
 import { create, getById, list, updateStatus } from "./orders";
-
-const prisma = new PrismaClient();
-
-async function createTestUser(name = "Test User") {
-  return prisma.user.create({ data: { name } });
-}
+import { prisma, createTestUser, cleanUp } from "./test-helpers";
 
 async function createTestPatient(createdById: string) {
   return prisma.patient.create({
@@ -30,14 +24,6 @@ async function createTestLabTests(createdById: string, count = 3) {
     created.push(await prisma.labTest.create({ data: { ...test, createdById } }));
   }
   return created;
-}
-
-async function cleanUp() {
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.labTest.deleteMany();
-  await prisma.patient.deleteMany();
-  await prisma.user.deleteMany();
 }
 
 describe("orderService.create", () => {

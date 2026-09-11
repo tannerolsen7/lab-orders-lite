@@ -1,22 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { PrismaClient } from "@prisma/client";
 import { list, getById, create, update, retire, reactivate } from "./labTests";
-
-const prisma = new PrismaClient();
-
-async function createTestUser() {
-  return prisma.user.create({
-    data: { name: "Test User" },
-  });
-}
-
-async function cleanUp() {
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.labTest.deleteMany();
-  await prisma.patient.deleteMany();
-  await prisma.user.deleteMany();
-}
+import { prisma, createTestUser, cleanUp } from "./test-helpers";
 
 describe("labTestService.list", () => {
   beforeEach(cleanUp);

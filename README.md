@@ -100,3 +100,16 @@ docs/
 - **No pagination.** All list endpoints fetch every record. This is fine at take-home scale (tens of records). Production would need cursor-based pagination in the service layer and "load more" or infinite scroll in the UI.
 - **SQLite.** Zero-config local development. The schema is Postgres-compatible. Order number generation relies on SQLite's single-writer serialization — a Postgres migration would need a sequence or `RETURNING` clause.
 - **No client-side caching.** Server Components fetch fresh data on each navigation. For a staff tool with a small user base, this is simpler and correct. React Query or SWR would add complexity without a clear payoff at this scale.
+
+## What I'd add with more time
+
+- **Table sorting.** Column headers should be clickable to sort by name, date, status, or price. The `DataTable` component is already centralized, so the change would be isolated there.
+- **Inline test creation during ordering.** Currently you pick from existing catalog items. A "quick add" flow in the order form would match real clinic workflows where a new test needs to be entered on the spot.
+- **Bulk status transitions.** Labs process samples in batches — the UI should let staff select multiple orders and move them to In Progress or Completed at once.
+- **Export to CSV/PDF.** Staff need to pull reports and hand paper summaries to patients. Order lists and patient records are the obvious starting points.
+- **Order status notifications.** Email or in-app alerts when an order moves to Completed, so the ordering clinician doesn't have to poll the list.
+- **Audit log.** Order status transitions are tracked, but a full audit trail (who changed what, when, across all entities) would be important for compliance in a clinical setting.
+- **Optimistic UI with offline resilience.** Mutations currently wait for the server round-trip. Optimistic updates with rollback would make the app feel instant, and local caching would keep it usable on spotty clinic Wi-Fi.
+- **Mobile-responsive layout.** Clinic staff often use tablets at workstations. The current layout is desktop-first.
+- **Keyboard navigation.** Tab through the order creation flow without touching a mouse — important for high-volume data entry.
+- **Page transitions.** Animated route transitions for smoother navigation between list and detail views.

@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { prisma } from "@/lib/db";
+import { prisma, PRISMA_UNIQUE_CONSTRAINT, PRISMA_NOT_FOUND } from "@/lib/db";
 
 export async function list(includeInactive?: boolean) {
   return prisma.labTest.findMany({
@@ -35,7 +35,7 @@ export async function create(data: CreateInput, createdById: string) {
   } catch (e) {
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
-      e.code === "P2002"
+      e.code === PRISMA_UNIQUE_CONSTRAINT
     ) {
       throw new Error("A lab test with this code already exists.");
     }
@@ -67,7 +67,7 @@ export async function update(
   } catch (e) {
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
-      e.code === "P2025"
+      e.code === PRISMA_NOT_FOUND
     ) {
       throw new Error("Lab test not found");
     }
@@ -87,7 +87,7 @@ export async function retire(id: string, updatedById: string) {
   } catch (e) {
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
-      e.code === "P2025"
+      e.code === PRISMA_NOT_FOUND
     ) {
       throw new Error("Lab test not found");
     }
@@ -107,7 +107,7 @@ export async function reactivate(id: string, updatedById: string) {
   } catch (e) {
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
-      e.code === "P2025"
+      e.code === PRISMA_NOT_FOUND
     ) {
       throw new Error("Lab test not found");
     }

@@ -67,15 +67,21 @@ export function OrderCreateForm({
     [labTests, selectedTestIds]
   );
 
-  const totalCents = computeTotalCents(
-    selectedTests.map((t) => ({ priceCentsSnapshot: t.priceCents }))
+  const totalCents = useMemo(
+    () =>
+      computeTotalCents(
+        selectedTests.map((t) => ({ priceCentsSnapshot: t.priceCents }))
+      ),
+    [selectedTests]
   );
 
   const estimatedReady =
     selectedTests.length > 0
       ? computeEstimatedReadyDate(
           new Date(),
-          selectedTests.map((t) => ({ turnaroundHoursSnapshot: t.turnaroundHours }))
+          selectedTests.map((t) => ({
+            turnaroundHoursSnapshot: t.turnaroundHours,
+          }))
         )
       : null;
 

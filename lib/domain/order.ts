@@ -38,3 +38,19 @@ export function computeEstimatedReadyDate(
   result.setTime(result.getTime() + maxHours * 60 * 60 * 1000);
   return result;
 }
+
+export type StatusBadgeVariant = "pending" | "inProgress" | "completed" | "cancelled";
+
+export const STATUS_BADGE_MAP: Record<OrderStatus, StatusBadgeVariant> = {
+  PENDING: "pending",
+  IN_PROGRESS: "inProgress",
+  COMPLETED: "completed",
+  CANCELLED: "cancelled",
+};
+
+export const STATUS_LABELS: Record<OrderStatus, string> = {
+  PENDING: "Pending",
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};

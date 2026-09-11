@@ -2,18 +2,15 @@
 
 import { useState } from "react";
 import { useActionState } from "react";
+import type { Patient as PrismaPatient } from "@prisma/client";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/shared/FormField";
 import type { ActionResult } from "./actions";
 
-export type Patient = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
-  phone: string | null;
-  email: string | null;
-};
+export type Patient = Pick<
+  PrismaPatient,
+  "id" | "firstName" | "lastName" | "dateOfBirth" | "phone" | "email"
+>;
 
 export function PatientForm({
   patient,

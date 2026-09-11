@@ -19,7 +19,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - **Database:** SQLite via Prisma ORM
 - **Validation:** Zod at the server action boundary
 - **UI:** Tailwind CSS, shadcn/ui components
-- **Testing:** Vitest
+- **Testing:** Vitest (unit/integration), Playwright (E2E)
 
 ## Architecture
 
@@ -48,7 +48,8 @@ Prisma   Domain utils (pure functions)
 | `npm run build` | Production build |
 | `npm run lint` | ESLint |
 | `npx tsc --noEmit` | Type check |
-| `npx vitest run` | Run tests |
+| `npx vitest run` | Run unit/integration tests |
+| `npx playwright test` | Run E2E tests |
 | `npx prisma migrate dev` | Apply migrations |
 | `npx prisma generate` | Regenerate Prisma client |
 | `npx prisma db seed` | Seed sample data |
@@ -59,7 +60,7 @@ Prisma   Domain utils (pure functions)
 app/
   layout.tsx            App shell with navigation
   patients/             List, create, detail, edit
-  tests/                Lab test catalog (placeholder page)
+  tests/                Lab test catalog (list, create, edit, retire)
   orders/               List, create, detail with status transitions
 components/
   ui/                   shadcn/ui primitives (Button, Input, Table, etc.)
@@ -75,6 +76,8 @@ prisma/
   schema.prisma         Data model
   seed.ts               Development seed data
   migrations/           Schema migrations
+e2e/
+  *.spec.ts             Playwright end-to-end tests
 docs/
   specs/                Feature specifications
 ```
@@ -82,7 +85,7 @@ docs/
 ## Feature status
 
 - **Patients**: Complete — list with search, create via dialog, detail view, edit via dialog
-- **Lab test catalog**: Backend complete (service layer, validation schemas, seed data), frontend is a placeholder page
+- **Lab test catalog**: Complete — list with search, create/edit via dialog, retire and reactivate
 - **Orders**: Complete — list with status filters and search, create with patient/test picker and live summary, detail with status transitions (Pending → In Progress → Completed), cancel with reason dialog
 
 ## Design decisions
@@ -95,7 +98,6 @@ docs/
 
 ## Trade-offs
 
-- **Lab test catalog UI deferred.** The service layer, validation schemas, and seed data are fully built and tested. The frontend was deprioritized in favor of completing the full order lifecycle end-to-end, since orders are the core workflow.
 - **Single-user authentication.** `getCurrentUser()` returns the first user in the database. A production system would need session management, a login flow, and role-based access control. The auth boundary is already isolated to one function, so the plumbing is upgrade-ready.
 - **No pagination.** All list endpoints fetch every record. This is fine at take-home scale (tens of records). Production would need cursor-based pagination in the service layer and "load more" or infinite scroll in the UI.
 - **SQLite.** Zero-config local development. The schema is Postgres-compatible. Order number generation relies on SQLite's single-writer serialization — a Postgres migration would need a sequence or `RETURNING` clause.

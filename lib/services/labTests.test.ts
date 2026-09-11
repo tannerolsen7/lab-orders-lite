@@ -217,7 +217,7 @@ describe("labTestService.create", () => {
         },
         user.id
       )
-    ).rejects.toThrow();
+    ).rejects.toThrow("A lab test with this code already exists.");
   });
 });
 
@@ -397,6 +397,14 @@ describe("labTestService.retire", () => {
     expect(retired.updatedById).toBe(updater.id);
   });
 
+  it("throws 'Lab test not found' when lab test ID does not exist", async () => {
+    const user = await createTestUser();
+
+    await expect(retire("nonexistent-id", user.id)).rejects.toThrow(
+      "Lab test not found"
+    );
+  });
+
   it("is idempotent — retiring an already-retired test does not throw", async () => {
     const user = await createTestUser();
 
@@ -460,6 +468,14 @@ describe("labTestService.reactivate", () => {
     const reactivated = await reactivate(existing.id, updater.id);
 
     expect(reactivated.updatedById).toBe(updater.id);
+  });
+
+  it("throws 'Lab test not found' when lab test ID does not exist", async () => {
+    const user = await createTestUser();
+
+    await expect(reactivate("nonexistent-id", user.id)).rejects.toThrow(
+      "Lab test not found"
+    );
   });
 
   it("is idempotent — reactivating an already-active test does not throw", async () => {

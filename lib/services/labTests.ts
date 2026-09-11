@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/db";
+import { Prisma } from "@prisma/client";
+import { prisma, PRISMA_UNIQUE_CONSTRAINT, PRISMA_NOT_FOUND } from "@/lib/db";
 
 export async function list(includeInactive?: boolean) {
   return prisma.labTest.findMany({
@@ -21,15 +22,25 @@ interface CreateInput {
 }
 
 export async function create(data: CreateInput, createdById: string) {
-  return prisma.labTest.create({
-    data: {
-      code: data.code,
-      name: data.name,
-      priceCents: data.priceCents,
-      turnaroundHours: data.turnaroundHours,
-      createdById,
-    },
-  });
+  try {
+    return await prisma.labTest.create({
+      data: {
+        code: data.code,
+        name: data.name,
+        priceCents: data.priceCents,
+        turnaroundHours: data.turnaroundHours,
+        createdById,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === PRISMA_UNIQUE_CONSTRAINT
+    ) {
+      throw new Error("A lab test with this code already exists.");
+    }
+    throw e;
+  }
 }
 
 interface UpdateInput {
@@ -43,33 +54,63 @@ export async function update(
   data: UpdateInput,
   updatedById: string
 ) {
-  return prisma.labTest.update({
-    where: { id },
-    data: {
-      name: data.name,
-      priceCents: data.priceCents,
-      turnaroundHours: data.turnaroundHours,
-      updatedById,
-    },
-  });
+  try {
+    return await prisma.labTest.update({
+      where: { id },
+      data: {
+        name: data.name,
+        priceCents: data.priceCents,
+        turnaroundHours: data.turnaroundHours,
+        updatedById,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === PRISMA_NOT_FOUND
+    ) {
+      throw new Error("Lab test not found");
+    }
+    throw e;
+  }
 }
 
 export async function retire(id: string, updatedById: string) {
-  return prisma.labTest.update({
-    where: { id },
-    data: {
-      active: false,
-      updatedById,
-    },
-  });
+  try {
+    return await prisma.labTest.update({
+      where: { id },
+      data: {
+        active: false,
+        updatedById,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === PRISMA_NOT_FOUND
+    ) {
+      throw new Error("Lab test not found");
+    }
+    throw e;
+  }
 }
 
 export async function reactivate(id: string, updatedById: string) {
-  return prisma.labTest.update({
-    where: { id },
-    data: {
-      active: true,
-      updatedById,
-    },
-  });
+  try {
+    return await prisma.labTest.update({
+      where: { id },
+      data: {
+        active: true,
+        updatedById,
+      },
+    });
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === PRISMA_NOT_FOUND
+    ) {
+      throw new Error("Lab test not found");
+    }
+    throw e;
+  }
 }

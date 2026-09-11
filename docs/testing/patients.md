@@ -21,4 +21,3 @@
 8. Sets updatedById to the calling user's ID
 9. Throws when date of birth is in the future
 10. Throws when patient ID does not exist
-

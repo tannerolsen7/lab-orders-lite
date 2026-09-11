@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -8,6 +7,18 @@ import { OrderList } from "./OrderList";
 
 export default async function OrdersPage() {
   const orders = await orderService.list();
+  const rows = orders.map((o) => ({
+    id: o.id,
+    orderNumber: o.orderNumber,
+    status: o.status,
+    createdAt: o.createdAt,
+    patient: { firstName: o.patient.firstName, lastName: o.patient.lastName },
+    items: o.items.map((i) => ({
+      priceCentsSnapshot: i.priceCentsSnapshot,
+      turnaroundHoursSnapshot: i.turnaroundHoursSnapshot,
+    })),
+    createdBy: { name: o.createdBy.name },
+  }));
 
   return (
     <div>
@@ -22,9 +33,7 @@ export default async function OrdersPage() {
           </Button>
         }
       />
-      <Suspense>
-        <OrderList orders={orders} />
-      </Suspense>
+      <OrderList orders={rows} />
     </div>
   );
 }

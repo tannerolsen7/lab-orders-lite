@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import * as patientService from "@/lib/services/patients";
 import { PatientList } from "./PatientList";
@@ -9,9 +8,7 @@ export default async function PatientsPage() {
   return (
     <div>
       <PageHeader title="Patients" />
-      <Suspense>
-        <PatientList patients={patients} />
-      </Suspense>
+      <PatientList patients={patients} />
     </div>
   );
 }

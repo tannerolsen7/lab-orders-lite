@@ -37,6 +37,22 @@ to PITFALLS.md or ADRs when they reach 3+ occurrences.
 - Files: `app/patients/[id]/page.tsx:21`
 - Description: Bare `catch { notFound() }` masks DB connection errors as 404s. Should narrow to P2025.
 
+### suspense-missing-fallback
+
+- Category: Correctness
+- Occurrences: 1
+- Last seen: 2026-09-10
+- Files: `app/orders/page.tsx:23`, `app/patients/page.tsx:10`, `app/orders/[id]/page.tsx:14`, `app/patients/[id]/page.tsx:20`
+- Description: Inner `<Suspense>` with no `fallback` intercepts suspension before the route-level `loading.tsx` boundary, rendering blank instead of skeleton. Fixed by adding explicit fallback props.
+
+### usememo-wall-clock-dependency
+
+- Category: Correctness
+- Occurrences: 1
+- Last seen: 2026-09-10
+- Files: `app/orders/new/OrderCreateForm.tsx:78`
+- Description: `useMemo` wrapping `new Date()` freezes the timestamp at memo-creation time instead of using a fresh value each render. Fixed by reverting to direct computation.
+
 ## Resolved
 
 (None yet)

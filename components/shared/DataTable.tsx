@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -17,10 +18,12 @@ export function DataTable<T extends { id: string }>({
   columns,
   data,
   onRowClick,
+  rowClassName,
 }: {
   columns: Column<T>[];
   data: T[];
   onRowClick?: (row: T) => void;
+  rowClassName?: (row: T) => string | undefined;
 }) {
   return (
     <Table>
@@ -35,7 +38,10 @@ export function DataTable<T extends { id: string }>({
         {data.map((row) => (
           <TableRow
             key={row.id}
-            className={onRowClick ? "cursor-pointer" : undefined}
+            className={cn(
+              onRowClick && "cursor-pointer",
+              rowClassName?.(row)
+            )}
             onClick={() => onRowClick?.(row)}
           >
             {columns.map((col) => (

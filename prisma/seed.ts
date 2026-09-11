@@ -127,7 +127,7 @@ async function main() {
     }),
   ]);
 
-  const completedOrder = await prisma.order.upsert({
+  await prisma.order.upsert({
     where: { id: "order-completed" },
     update: {},
     create: {
@@ -155,7 +155,7 @@ async function main() {
     },
   });
 
-  const inProgressOrder = await prisma.order.upsert({
+  await prisma.order.upsert({
     where: { id: "order-in-progress" },
     update: {},
     create: {

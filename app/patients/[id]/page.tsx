@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { formatPatientName } from "@/lib/domain/patient";
+import { formatPatientName, formatPhone } from "@/lib/domain/patient";
 import { formatDate } from "@/lib/domain/dates";
 import { centsToDollars } from "@/lib/domain/money";
 import { computeTotalCents, STATUS_LABELS, STATUS_BADGE_MAP } from "@/lib/domain/order";
@@ -69,7 +69,7 @@ export default async function PatientDetailPage({
           <CardContent className="space-y-3">
             <div>
               <p className="text-sm text-muted-foreground">Phone</p>
-              <p className="truncate">{patient.phone ?? "Not provided"}</p>
+              <p className="truncate">{formatPhone(patient.phone) ?? "Not provided"}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Email</p>

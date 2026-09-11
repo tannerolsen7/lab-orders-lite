@@ -14,7 +14,7 @@ import {
 import { DataTable, type Column } from "@/components/shared/DataTable";
 import { SearchInput } from "@/components/shared/SearchInput";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { formatPatientName } from "@/lib/domain/patient";
+import { formatPatientName, formatPhone } from "@/lib/domain/patient";
 import { formatDate } from "@/lib/domain/dates";
 import { PatientForm, type Patient } from "./PatientForm";
 import { createPatient, updatePatient } from "./actions";
@@ -33,7 +33,7 @@ const columns: Column<Patient>[] = [
   {
     header: "Phone",
     cell: (row) => (
-      <span className="block max-w-36 truncate">{row.phone ?? "—"}</span>
+      <span className="block max-w-36 truncate">{formatPhone(row.phone) ?? "—"}</span>
     ),
   },
   {

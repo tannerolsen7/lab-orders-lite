@@ -1,3 +1,4 @@
+// ISO date strings (YYYY-MM-DD) sort lexicographically, so string comparison is safe here
 export function isDateInPast(dateString: string): boolean {
   const today = new Date().toISOString().split("T")[0];
   return dateString <= today;

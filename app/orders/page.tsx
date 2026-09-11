@@ -4,9 +4,28 @@ import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/shared/PageHeader";
 import * as orderService from "@/lib/services/orders";
 import { OrderList } from "./OrderList";
+import type { OrderStatus } from "@prisma/client";
 
-export default async function OrdersPage() {
-  const orders = await orderService.list();
+const VALID_STATUSES = new Set<string>([
+  "PENDING",
+  "IN_PROGRESS",
+  "COMPLETED",
+  "CANCELLED",
+]);
+
+export default async function OrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const { status } = await searchParams;
+  const statusFilter = status && VALID_STATUSES.has(status)
+    ? (status as OrderStatus)
+    : undefined;
+
+  const orders = await orderService.list(
+    statusFilter ? { status: statusFilter } : undefined
+  );
   const rows = orders.map((o) => ({
     id: o.id,
     orderNumber: o.orderNumber,
@@ -33,7 +52,7 @@ export default async function OrdersPage() {
           </Button>
         }
       />
-      <OrderList orders={rows} />
+      <OrderList orders={rows} initialStatus={statusFilter ?? null} />
     </div>
   );
 }

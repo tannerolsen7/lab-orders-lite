@@ -77,10 +77,22 @@ const columns: Column<OrderRow>[] = [
   },
 ];
 
-export function OrderList({ orders }: { orders: OrderRow[] }) {
+export function OrderList({
+  orders,
+  initialStatus,
+}: {
+  orders: OrderRow[];
+  initialStatus: OrderStatus | null;
+}) {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<OrderStatus | null>(null);
+  const statusFilter = initialStatus;
+
+  function setStatusFilter(status: OrderStatus | null) {
+    const params = new URLSearchParams();
+    if (status) params.set("status", status);
+    router.push(`/orders${params.toString() ? `?${params}` : ""}`);
+  }
 
   const statusCounts = useMemo(() => {
     const counts = new Map<OrderStatus, number>();
@@ -91,7 +103,6 @@ export function OrderList({ orders }: { orders: OrderRow[] }) {
   }, [orders]);
 
   const filtered = orders.filter((o) => {
-    if (statusFilter && o.status !== statusFilter) return false;
     if (search) {
       const query = search.toLowerCase();
       return (

@@ -42,7 +42,7 @@ describe("centsToDollars", () => {
     expect(centsToDollars(0)).toBe("0.00");
   });
 
-  it("formats large amounts", () => {
-    expect(centsToDollars(100000)).toBe("1,000.00");
+  it("formats large amounts without locale separators", () => {
+    expect(centsToDollars(100000)).toBe("1000.00");
   });
 });

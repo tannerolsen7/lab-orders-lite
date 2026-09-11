@@ -20,6 +20,7 @@ export async function create(data: {
       throw new Error("One or more tests not found or inactive");
     }
 
+    // Relies on SQLite's single-writer serialization; would need a sequence in Postgres
     const lastOrder = await tx.order.findFirst({
       orderBy: { orderNumber: "desc" },
       select: { orderNumber: true },
@@ -86,26 +87,28 @@ export async function updateStatus(
   updatedById: string,
   cancelReason?: string
 ) {
-  const order = await prisma.order.findUniqueOrThrow({
-    where: { id },
-  });
+  return prisma.$transaction(async (tx) => {
+    const order = await tx.order.findUniqueOrThrow({
+      where: { id },
+    });
 
-  if (!canTransition(order.status, status)) {
-    throw new Error(
-      `Cannot transition from ${order.status} to ${status}`
-    );
-  }
+    if (!canTransition(order.status, status)) {
+      throw new Error(
+        `Cannot transition from ${order.status} to ${status}`
+      );
+    }
 
-  if (status === "CANCELLED" && !cancelReason) {
-    throw new Error("Cancel reason is required when cancelling");
-  }
+    if (status === "CANCELLED" && !cancelReason) {
+      throw new Error("Cancel reason is required when cancelling");
+    }
 
-  return prisma.order.update({
-    where: { id },
-    data: {
-      status,
-      updatedById,
-      cancelReason: status === "CANCELLED" ? cancelReason : null,
-    },
+    return tx.order.update({
+      where: { id },
+      data: {
+        status,
+        updatedById,
+        cancelReason: status === "CANCELLED" ? cancelReason : null,
+      },
+    });
   });
 }

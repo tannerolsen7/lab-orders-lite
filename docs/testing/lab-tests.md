@@ -31,9 +31,12 @@
 15. Sets active to false on an active lab test
 16. Sets updatedById to the calling user's ID
 17. Is idempotent — retiring an already-retired test does not throw
+18. Throws "Lab test not found" when lab test ID does not exist
 
 ## Service: reactivate
 
-18. Sets active to true on a retired lab test
-19. Sets updatedById to the calling user's ID
-20. Is idempotent — reactivating an already-active test does not throw
+19. Sets active to true on a retired lab test
+20. Sets updatedById to the calling user's ID
+21. Is idempotent — reactivating an already-active test does not throw
+22. Throws "Lab test not found" when lab test ID does not exist
+

@@ -88,7 +88,7 @@ docs/
 
 ## Feature status
 
-- **Patients**: Complete — list with search, create via dialog, detail view, edit via dialog
+- **Patients**: Complete — list with search, create via dialog, detail view with order history, edit via dialog
 - **Lab test catalog**: Complete — list with search, create/edit via dialog, retire and reactivate
 - **Orders**: Complete — list with status filters and search, create with patient/test picker and live summary, detail with status transitions (Pending → In Progress → Completed), cancel with reason dialog
 

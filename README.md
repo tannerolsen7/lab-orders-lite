@@ -7,8 +7,7 @@ Staff-facing tool for managing patients, lab test catalogs, and lab orders. Buil
 ```bash
 npm install
 cp .env.example .env
-npx prisma migrate dev
-npm run dev
+npm run dev:setup
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
@@ -45,6 +44,7 @@ Prisma   Domain utils (pure functions)
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Start dev server |
+| `npm run dev:setup` | Migrate, seed, and start dev server |
 | `npm run build` | Production build |
 | `npm run lint` | ESLint |
 | `npx tsc --noEmit` | Type check |

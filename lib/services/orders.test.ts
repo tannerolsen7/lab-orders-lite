@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { PrismaClient } from "@prisma/client";
+import { create, getById, list, updateStatus } from "./orders";
 
 const prisma = new PrismaClient();
 
@@ -44,7 +45,6 @@ describe("orderService.create", () => {
   afterEach(cleanUp);
 
   it("creates an order with snapshotted prices in a single transaction", async () => {
-    const { create } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 2);
@@ -66,7 +66,6 @@ describe("orderService.create", () => {
   });
 
   it("assigns an auto-incrementing orderNumber", async () => {
-    const { create } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -86,7 +85,6 @@ describe("orderService.create", () => {
   });
 
   it("throws when patient does not exist", async () => {
-    const { create } = await import("./orders");
     const user = await createTestUser();
     const labTests = await createTestLabTests(user.id, 1);
 
@@ -100,7 +98,6 @@ describe("orderService.create", () => {
   });
 
   it("throws when a lab test does not exist", async () => {
-    const { create } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
 
@@ -114,7 +111,6 @@ describe("orderService.create", () => {
   });
 
   it("throws when lab test IDs contain duplicates", async () => {
-    const { create } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -129,7 +125,6 @@ describe("orderService.create", () => {
   });
 
   it("throws when a lab test is inactive", async () => {
-    const { create } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const inactiveTest = await prisma.labTest.create({
@@ -158,7 +153,6 @@ describe("orderService.getById", () => {
   afterEach(cleanUp);
 
   it("returns the order with items, patient, and lab test details", async () => {
-    const { create, getById } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 2);
@@ -179,7 +173,6 @@ describe("orderService.getById", () => {
   });
 
   it("throws when the order does not exist", async () => {
-    const { getById } = await import("./orders");
 
     await expect(getById("nonexistent-order")).rejects.toThrow();
   });
@@ -190,7 +183,6 @@ describe("orderService.list", () => {
   afterEach(cleanUp);
 
   it("returns all orders with patient info ordered by creation date descending", async () => {
-    const { create, list } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -206,7 +198,6 @@ describe("orderService.list", () => {
   });
 
   it("filters by status when provided", async () => {
-    const { create, list, updateStatus } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -223,7 +214,6 @@ describe("orderService.list", () => {
   });
 
   it("returns an empty array when no orders exist", async () => {
-    const { list } = await import("./orders");
 
     const orders = await list();
 
@@ -236,7 +226,6 @@ describe("orderService.updateStatus", () => {
   afterEach(cleanUp);
 
   it("transitions from PENDING to IN_PROGRESS", async () => {
-    const { create, updateStatus } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -249,7 +238,6 @@ describe("orderService.updateStatus", () => {
   });
 
   it("transitions from IN_PROGRESS to COMPLETED", async () => {
-    const { create, updateStatus } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -262,7 +250,6 @@ describe("orderService.updateStatus", () => {
   });
 
   it("sets cancelReason when transitioning to CANCELLED", async () => {
-    const { create, updateStatus } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -275,7 +262,6 @@ describe("orderService.updateStatus", () => {
   });
 
   it("cancels from IN_PROGRESS with reason", async () => {
-    const { create, updateStatus } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -289,7 +275,6 @@ describe("orderService.updateStatus", () => {
   });
 
   it("throws when transition is invalid", async () => {
-    const { create, updateStatus } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -302,7 +287,6 @@ describe("orderService.updateStatus", () => {
   });
 
   it("throws when cancelling without a reason", async () => {
-    const { create, updateStatus } = await import("./orders");
     const user = await createTestUser();
     const patient = await createTestPatient(user.id);
     const labTests = await createTestLabTests(user.id, 1);
@@ -315,7 +299,6 @@ describe("orderService.updateStatus", () => {
   });
 
   it("throws when order does not exist", async () => {
-    const { updateStatus } = await import("./orders");
     const user = await createTestUser();
 
     await expect(

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { PrismaClient } from "@prisma/client";
+import { list, getById, create, update } from "./patients";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +23,6 @@ describe("patientService.list", () => {
   afterEach(cleanUp);
 
   it("returns all patients ordered by last name ascending", async () => {
-    const { list } = await import("./patients");
     const user = await createTestUser();
 
     await prisma.patient.createMany({
@@ -60,7 +60,6 @@ describe("patientService.list", () => {
   });
 
   it("returns an empty array when no patients exist", async () => {
-    const { list } = await import("./patients");
 
     const patients = await list();
 
@@ -73,7 +72,6 @@ describe("patientService.getById", () => {
   afterEach(cleanUp);
 
   it("returns the patient when given a valid ID", async () => {
-    const { getById } = await import("./patients");
     const user = await createTestUser();
 
     const created = await prisma.patient.create({
@@ -94,7 +92,6 @@ describe("patientService.getById", () => {
   });
 
   it("throws when given an ID that does not exist", async () => {
-    const { getById } = await import("./patients");
 
     await expect(getById("nonexistent-id")).rejects.toThrow();
   });
@@ -105,7 +102,6 @@ describe("patientService.create", () => {
   afterEach(cleanUp);
 
   it("creates a patient with valid data and returns the saved record", async () => {
-    const { create } = await import("./patients");
     const user = await createTestUser();
 
     const patient = await create(
@@ -133,7 +129,6 @@ describe("patientService.create", () => {
   });
 
   it("stores null when phone or email is an empty string", async () => {
-    const { create } = await import("./patients");
     const user = await createTestUser();
 
     const patient = await create(
@@ -152,7 +147,6 @@ describe("patientService.create", () => {
   });
 
   it("throws when date of birth is in the future", async () => {
-    const { create } = await import("./patients");
     const user = await createTestUser();
 
     const futureDate = new Date();
@@ -178,7 +172,6 @@ describe("patientService.update", () => {
   afterEach(cleanUp);
 
   it("updates patient fields and returns the updated record", async () => {
-    const { update } = await import("./patients");
     const user = await createTestUser();
 
     const existing = await prisma.patient.create({
@@ -208,7 +201,6 @@ describe("patientService.update", () => {
   });
 
   it("sets updatedById to the calling user's ID", async () => {
-    const { update } = await import("./patients");
     const creator = await createTestUser();
     const updater = await prisma.user.create({
       data: { name: "Updater" },
@@ -239,7 +231,6 @@ describe("patientService.update", () => {
   });
 
   it("throws when date of birth is in the future", async () => {
-    const { update } = await import("./patients");
     const user = await createTestUser();
 
     const existing = await prisma.patient.create({
@@ -271,7 +262,6 @@ describe("patientService.update", () => {
   });
 
   it("throws when patient ID does not exist", async () => {
-    const { update } = await import("./patients");
     const user = await createTestUser();
 
     await expect(

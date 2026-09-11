@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -7,6 +8,7 @@ import { formatPatientName } from "@/lib/domain/patient";
 import { formatDate } from "@/lib/domain/dates";
 import * as patientService from "@/lib/services/patients";
 import { PatientDetailEdit } from "./PatientDetailEdit";
+import PatientDetailLoading from "./loading";
 
 export default async function PatientDetailPage({
   params,
@@ -15,6 +17,14 @@ export default async function PatientDetailPage({
 }) {
   const { id } = await params;
 
+  return (
+    <Suspense fallback={<PatientDetailLoading />}>
+      <PatientDetailLoader id={id} />
+    </Suspense>
+  );
+}
+
+async function PatientDetailLoader({ id }: { id: string }) {
   let patient;
   try {
     patient = await patientService.getById(id);

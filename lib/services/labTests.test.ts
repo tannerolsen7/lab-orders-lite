@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { PrismaClient } from "@prisma/client";
+import { list, getById, create, update, retire, reactivate } from "./labTests";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +23,6 @@ describe("labTestService.list", () => {
   afterEach(cleanUp);
 
   it("returns only active lab tests ordered by name ascending", async () => {
-    const { list } = await import("./labTests");
     const user = await createTestUser();
 
     await prisma.labTest.createMany({
@@ -62,7 +62,6 @@ describe("labTestService.list", () => {
   });
 
   it("returns all lab tests including inactive when includeInactive is true", async () => {
-    const { list } = await import("./labTests");
     const user = await createTestUser();
 
     await prisma.labTest.createMany({
@@ -92,7 +91,6 @@ describe("labTestService.list", () => {
   });
 
   it("returns an empty array when no lab tests exist", async () => {
-    const { list } = await import("./labTests");
 
     const tests = await list();
 
@@ -105,7 +103,6 @@ describe("labTestService.getById", () => {
   afterEach(cleanUp);
 
   it("returns the lab test when given a valid ID", async () => {
-    const { getById } = await import("./labTests");
     const user = await createTestUser();
 
     const created = await prisma.labTest.create({
@@ -126,7 +123,6 @@ describe("labTestService.getById", () => {
   });
 
   it("returns inactive lab tests", async () => {
-    const { getById } = await import("./labTests");
     const user = await createTestUser();
 
     const created = await prisma.labTest.create({
@@ -147,7 +143,6 @@ describe("labTestService.getById", () => {
   });
 
   it("throws when given an ID that does not exist", async () => {
-    const { getById } = await import("./labTests");
 
     await expect(getById("nonexistent-id")).rejects.toThrow();
   });
@@ -158,7 +153,6 @@ describe("labTestService.create", () => {
   afterEach(cleanUp);
 
   it("creates a lab test with valid data and returns the saved record", async () => {
-    const { create } = await import("./labTests");
     const user = await createTestUser();
 
     const test = await create(
@@ -185,7 +179,6 @@ describe("labTestService.create", () => {
   });
 
   it("sets createdById to the calling user's ID", async () => {
-    const { create } = await import("./labTests");
     const user = await createTestUser();
 
     const test = await create(
@@ -202,7 +195,6 @@ describe("labTestService.create", () => {
   });
 
   it("throws when code already exists", async () => {
-    const { create } = await import("./labTests");
     const user = await createTestUser();
 
     await prisma.labTest.create({
@@ -234,7 +226,6 @@ describe("labTestService.update", () => {
   afterEach(cleanUp);
 
   it("updates name, priceCents, and turnaroundHours and returns the updated record", async () => {
-    const { update } = await import("./labTests");
     const user = await createTestUser();
 
     const existing = await prisma.labTest.create({
@@ -263,7 +254,6 @@ describe("labTestService.update", () => {
   });
 
   it("does not change the code field", async () => {
-    const { update } = await import("./labTests");
     const user = await createTestUser();
 
     const existing = await prisma.labTest.create({
@@ -290,7 +280,6 @@ describe("labTestService.update", () => {
   });
 
   it("sets updatedById to the calling user's ID", async () => {
-    const { update } = await import("./labTests");
     const creator = await createTestUser();
     const updater = await prisma.user.create({
       data: { name: "Updater" },
@@ -320,7 +309,6 @@ describe("labTestService.update", () => {
   });
 
   it("throws when lab test ID does not exist", async () => {
-    const { update } = await import("./labTests");
     const user = await createTestUser();
 
     await expect(
@@ -337,7 +325,6 @@ describe("labTestService.update", () => {
   });
 
   it("allows updating a retired lab test", async () => {
-    const { update } = await import("./labTests");
     const user = await createTestUser();
 
     const existing = await prisma.labTest.create({
@@ -371,7 +358,6 @@ describe("labTestService.retire", () => {
   afterEach(cleanUp);
 
   it("sets active to false on an active lab test", async () => {
-    const { retire } = await import("./labTests");
     const user = await createTestUser();
 
     const existing = await prisma.labTest.create({
@@ -391,7 +377,6 @@ describe("labTestService.retire", () => {
   });
 
   it("sets updatedById to the calling user's ID", async () => {
-    const { retire } = await import("./labTests");
     const creator = await createTestUser();
     const updater = await prisma.user.create({
       data: { name: "Updater" },
@@ -413,7 +398,6 @@ describe("labTestService.retire", () => {
   });
 
   it("is idempotent — retiring an already-retired test does not throw", async () => {
-    const { retire } = await import("./labTests");
     const user = await createTestUser();
 
     const existing = await prisma.labTest.create({
@@ -438,7 +422,6 @@ describe("labTestService.reactivate", () => {
   afterEach(cleanUp);
 
   it("sets active to true on a retired lab test", async () => {
-    const { reactivate } = await import("./labTests");
     const user = await createTestUser();
 
     const existing = await prisma.labTest.create({
@@ -458,7 +441,6 @@ describe("labTestService.reactivate", () => {
   });
 
   it("sets updatedById to the calling user's ID", async () => {
-    const { reactivate } = await import("./labTests");
     const creator = await createTestUser();
     const updater = await prisma.user.create({
       data: { name: "Updater" },
@@ -481,7 +463,6 @@ describe("labTestService.reactivate", () => {
   });
 
   it("is idempotent — reactivating an already-active test does not throw", async () => {
-    const { reactivate } = await import("./labTests");
     const user = await createTestUser();
 
     const existing = await prisma.labTest.create({

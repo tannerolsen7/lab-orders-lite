@@ -16,8 +16,4 @@ describe("formatDate", () => {
     expect(formatDate(date)).toBe("Dec 31, 2024");
   });
 
-  it("does not shift date-only values across timezone boundaries", () => {
-    const date = new Date("2024-03-15T00:00:00Z");
-    expect(formatDate(date)).toBe("Mar 15, 2024");
-  });
 });

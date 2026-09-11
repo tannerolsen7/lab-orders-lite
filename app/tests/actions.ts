@@ -2,51 +2,39 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { labTestSchema } from "@/lib/validations/labTest";
+import { labTestSchema, type LabTestInput } from "@/lib/validations/labTest";
 import * as labTestService from "@/lib/services/labTests";
 import { dollarsToCents } from "@/lib/domain/money";
 import { getCurrentUser } from "@/lib/auth";
-import type { ActionResult } from "@/lib/actionResult";
+import { type ActionResult, toActionError } from "@/lib/actionResult";
 
 const BUSINESS_ERRORS = new Set([
   "Lab test not found",
   "A lab test with this code already exists.",
 ]);
 
-function toActionError(e: unknown): ActionResult {
-  if (e instanceof Error && BUSINESS_ERRORS.has(e.message)) {
-    return { ok: false, error: e.message };
-  }
-  return { ok: false, error: "An unexpected error occurred. Please try again." };
-}
-
-function parseForm<T extends z.ZodTypeAny>(schema: T, formData: FormData) {
-  const parsed = schema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) {
-    return { ok: false as const, error: parsed.error.errors[0].message };
-  }
-  return { ok: true as const, data: parsed.data as z.infer<T> };
-}
-
 const updateSchema = labTestSchema.omit({ code: true });
 
 export async function createLabTest(formData: FormData): Promise<ActionResult> {
-  const result = parseForm(labTestSchema, formData);
-  if (!result.ok) return { ok: false, error: result.error };
+  const parsed = labTestSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.errors[0].message };
+  }
+  const data: LabTestInput = parsed.data;
 
   try {
     const user = await getCurrentUser();
     await labTestService.create(
       {
-        code: result.data.code,
-        name: result.data.name,
-        priceCents: dollarsToCents(result.data.priceDollars),
-        turnaroundHours: result.data.turnaroundHours,
+        code: data.code,
+        name: data.name,
+        priceCents: dollarsToCents(data.priceDollars),
+        turnaroundHours: data.turnaroundHours,
       },
       user.id
     );
   } catch (e) {
-    return toActionError(e);
+    return { ok: false, error: toActionError(e, BUSINESS_ERRORS) };
   }
 
   revalidatePath("/tests");
@@ -62,22 +50,24 @@ export async function updateLabTest(
   const idResult = idSchema.safeParse(id);
   if (!idResult.success) return { ok: false, error: "Invalid lab test ID." };
 
-  const result = parseForm(updateSchema, formData);
-  if (!result.ok) return { ok: false, error: result.error };
+  const parsed = updateSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.errors[0].message };
+  }
 
   try {
     const user = await getCurrentUser();
     await labTestService.update(
       idResult.data,
       {
-        name: result.data.name,
-        priceCents: dollarsToCents(result.data.priceDollars),
-        turnaroundHours: result.data.turnaroundHours,
+        name: parsed.data.name,
+        priceCents: dollarsToCents(parsed.data.priceDollars),
+        turnaroundHours: parsed.data.turnaroundHours,
       },
       user.id
     );
   } catch (e) {
-    return toActionError(e);
+    return { ok: false, error: toActionError(e, BUSINESS_ERRORS) };
   }
 
   revalidatePath("/tests");
@@ -92,7 +82,7 @@ export async function retireLabTest(id: string): Promise<ActionResult> {
     const user = await getCurrentUser();
     await labTestService.retire(idResult.data, user.id);
   } catch (e) {
-    return toActionError(e);
+    return { ok: false, error: toActionError(e, BUSINESS_ERRORS) };
   }
 
   revalidatePath("/tests");
@@ -107,7 +97,7 @@ export async function reactivateLabTest(id: string): Promise<ActionResult> {
     const user = await getCurrentUser();
     await labTestService.reactivate(idResult.data, user.id);
   } catch (e) {
-    return toActionError(e);
+    return { ok: false, error: toActionError(e, BUSINESS_ERRORS) };
   }
 
   revalidatePath("/tests");

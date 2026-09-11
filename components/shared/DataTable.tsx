@@ -28,11 +28,13 @@ export function DataTable<T extends { id: string }>({
   rowClassName?: (row: T) => string | undefined;
 }) {
   return (
-    <Table>
+    <Table className="min-w-[640px]">
       <TableHeader>
         <TableRow>
           {columns.map((col, i) => (
-            <TableHead key={i}>{col.header}</TableHead>
+            <TableHead key={i} className="whitespace-nowrap">
+              {col.header}
+            </TableHead>
           ))}
         </TableRow>
       </TableHeader>

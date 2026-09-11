@@ -148,9 +148,9 @@ export function OrderCreateForm({
         </div>
       )}
 
-      <div className="flex gap-0 min-h-[480px]">
+      <div className="flex flex-col gap-6 md:flex-row md:gap-0 md:min-h-[480px]">
         {/* Form side */}
-        <div className="flex-1 pr-6">
+        <div className="flex-1 md:pr-6">
           {/* Patient picker */}
           <div className="mb-6">
             <label className="mb-2 block text-sm font-semibold">
@@ -322,7 +322,7 @@ export function OrderCreateForm({
         </div>
 
         {/* Sticky summary sidebar */}
-        <div className="w-72 shrink-0 border-l border-border bg-card p-6 rounded-r-xl flex flex-col">
+        <div className="w-full rounded-xl md:w-72 md:shrink-0 md:border-l md:border-border md:rounded-r-xl md:rounded-l-none bg-card p-6 flex flex-col">
           <h2 className="mb-5 text-sm font-semibold">Order Summary</h2>
 
           {selectedTests.length === 0 ? (

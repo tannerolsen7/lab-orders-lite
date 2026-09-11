@@ -5,17 +5,9 @@ import { z } from "zod";
 import { patientSchema } from "@/lib/validations/patient";
 import * as patientService from "@/lib/services/patients";
 import { getCurrentUser } from "@/lib/auth";
-
-export type ActionResult = { ok: true } | { ok: false; error: string };
+import { type ActionResult, toActionError } from "@/lib/actionResult";
 
 const BUSINESS_ERRORS = new Set(["Date of birth must be in the past"]);
-
-function toActionError(e: unknown): string {
-  if (e instanceof Error && BUSINESS_ERRORS.has(e.message)) {
-    return e.message;
-  }
-  return "An unexpected error occurred. Please try again.";
-}
 
 function parsePatientForm(formData: FormData) {
   const raw = {
@@ -41,7 +33,7 @@ export async function createPatient(formData: FormData): Promise<ActionResult> {
     const user = await getCurrentUser();
     await patientService.create(result.data, user.id);
   } catch (e) {
-    return { ok: false, error: toActionError(e) };
+    return { ok: false, error: toActionError(e, BUSINESS_ERRORS) };
   }
 
   revalidatePath("/patients");
@@ -64,7 +56,7 @@ export async function updatePatient(
     const user = await getCurrentUser();
     await patientService.update(idResult.data, result.data, user.id);
   } catch (e) {
-    return { ok: false, error: toActionError(e) };
+    return { ok: false, error: toActionError(e, BUSINESS_ERRORS) };
   }
 
   revalidatePath("/patients");

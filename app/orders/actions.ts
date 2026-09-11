@@ -5,8 +5,7 @@ import { z } from "zod";
 import { createOrderSchema, updateStatusSchema } from "@/lib/validations/order";
 import * as orderService from "@/lib/services/orders";
 import { getCurrentUser } from "@/lib/auth";
-
-export type ActionResult = { ok: true } | { ok: false; error: string };
+import { type ActionResult, toActionError } from "@/lib/actionResult";
 
 const BUSINESS_ERRORS = new Set([
   "Patient not found",
@@ -14,13 +13,7 @@ const BUSINESS_ERRORS = new Set([
   "Cancel reason is required when cancelling",
 ]);
 
-function toActionError(e: unknown): string {
-  if (e instanceof Error) {
-    if (BUSINESS_ERRORS.has(e.message)) return e.message;
-    if (e.message.startsWith("Cannot transition")) return e.message;
-  }
-  return "An unexpected error occurred. Please try again.";
-}
+const BUSINESS_PREFIXES = ["Cannot transition"];
 
 export async function createOrder(formData: {
   patientId: string;
@@ -39,7 +32,7 @@ export async function createOrder(formData: {
     });
     return { ok: true, id: order.id };
   } catch (e) {
-    return { ok: false, error: toActionError(e) };
+    return { ok: false, error: toActionError(e, BUSINESS_ERRORS, BUSINESS_PREFIXES) };
   }
 }
 
@@ -73,7 +66,7 @@ export async function updateOrderStatus(
       parsed.data.cancelReason
     );
   } catch (e) {
-    return { ok: false, error: toActionError(e) };
+    return { ok: false, error: toActionError(e, BUSINESS_ERRORS, BUSINESS_PREFIXES) };
   }
 
   revalidatePath(`/orders/${orderId}`);

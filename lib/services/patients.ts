@@ -1,6 +1,6 @@
 import type { Patient as PrismaPatient } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { isDateInPast, toUTCDate } from "@/lib/domain/patient";
+import { isDateInPast, toUTCDate } from "@/lib/domain/dates";
 import type { PatientInput } from "@/lib/validations/patient";
 
 export type PatientSummary = Pick<

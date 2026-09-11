@@ -30,9 +30,11 @@ import {
   computeTotalCents,
   computeEstimatedReadyDate,
   getAvailableTransitions,
+  STATUS_BADGE_MAP,
+  STATUS_LABELS,
+  type OrderStatus,
 } from "@/lib/domain/order";
 import { updateOrderStatus } from "../actions";
-import type { OrderStatus } from "@prisma/client";
 
 type OrderWithRelations = {
   id: string;
@@ -50,23 +52,6 @@ type OrderWithRelations = {
   }[];
   createdBy: { name: string };
   updatedBy: { name: string } | null;
-};
-
-const STATUS_BADGE_MAP: Record<
-  OrderStatus,
-  "pending" | "inProgress" | "completed" | "cancelled"
-> = {
-  PENDING: "pending",
-  IN_PROGRESS: "inProgress",
-  COMPLETED: "completed",
-  CANCELLED: "cancelled",
-};
-
-const STATUS_LABELS: Record<OrderStatus, string> = {
-  PENDING: "Pending",
-  IN_PROGRESS: "In Progress",
-  COMPLETED: "Completed",
-  CANCELLED: "Cancelled",
 };
 
 const TRANSITION_LABELS: Record<OrderStatus, string> = {

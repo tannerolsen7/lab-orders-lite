@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,8 +11,13 @@ import { SearchInput } from "@/components/shared/SearchInput";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { centsToDollars } from "@/lib/domain/money";
 import { formatDate } from "@/lib/domain/dates";
-import { computeTotalCents, computeEstimatedReadyDate } from "@/lib/domain/order";
-import type { OrderStatus } from "@prisma/client";
+import {
+  computeTotalCents,
+  computeEstimatedReadyDate,
+  STATUS_BADGE_MAP,
+  STATUS_LABELS,
+  type OrderStatus,
+} from "@/lib/domain/order";
 
 type OrderRow = {
   id: string;
@@ -32,66 +37,58 @@ const STATUS_FILTERS: { label: string; value: OrderStatus | null }[] = [
   { label: "Cancelled", value: "CANCELLED" },
 ];
 
-const STATUS_BADGE_MAP: Record<OrderStatus, "pending" | "inProgress" | "completed" | "cancelled"> = {
-  PENDING: "pending",
-  IN_PROGRESS: "inProgress",
-  COMPLETED: "completed",
-  CANCELLED: "cancelled",
-};
-
-const STATUS_LABELS: Record<OrderStatus, string> = {
-  PENDING: "Pending",
-  IN_PROGRESS: "In Progress",
-  COMPLETED: "Completed",
-  CANCELLED: "Cancelled",
-};
-
-function getColumns(): Column<OrderRow>[] {
-  return [
-    {
-      header: "Patient",
-      cell: (row) => (
-        <span className="block max-w-48 truncate font-medium">
-          {row.patient.lastName}, {row.patient.firstName}
-        </span>
-      ),
-    },
-    {
-      header: "Status",
-      cell: (row) => (
-        <Badge variant={STATUS_BADGE_MAP[row.status]}>
-          {STATUS_LABELS[row.status]}
-        </Badge>
-      ),
-    },
-    {
-      header: "Total",
-      cell: (row) => `$${centsToDollars(computeTotalCents(row.items))}`,
-    },
-    {
-      header: "Est. Ready",
-      cell: (row) =>
-        row.status === "CANCELLED"
-          ? "—"
-          : formatDate(computeEstimatedReadyDate(row.createdAt, row.items)),
-    },
-    {
-      header: "Created",
-      cell: (row) => formatDate(row.createdAt),
-    },
-    {
-      header: "By",
-      cell: (row) => (
-        <span className="block max-w-24 truncate">{row.createdBy.name}</span>
-      ),
-    },
-  ];
-}
+const columns: Column<OrderRow>[] = [
+  {
+    header: "Patient",
+    cell: (row) => (
+      <span className="block max-w-48 truncate font-medium">
+        {row.patient.lastName}, {row.patient.firstName}
+      </span>
+    ),
+  },
+  {
+    header: "Status",
+    cell: (row) => (
+      <Badge variant={STATUS_BADGE_MAP[row.status]}>
+        {STATUS_LABELS[row.status]}
+      </Badge>
+    ),
+  },
+  {
+    header: "Total",
+    cell: (row) => `$${centsToDollars(computeTotalCents(row.items))}`,
+  },
+  {
+    header: "Est. Ready",
+    cell: (row) =>
+      row.status === "CANCELLED"
+        ? "—"
+        : formatDate(computeEstimatedReadyDate(row.createdAt, row.items)),
+  },
+  {
+    header: "Created",
+    cell: (row) => formatDate(row.createdAt),
+  },
+  {
+    header: "By",
+    cell: (row) => (
+      <span className="block max-w-24 truncate">{row.createdBy.name}</span>
+    ),
+  },
+];
 
 export function OrderList({ orders }: { orders: OrderRow[] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | null>(null);
+
+  const statusCounts = useMemo(() => {
+    const counts = new Map<OrderStatus, number>();
+    for (const order of orders) {
+      counts.set(order.status, (counts.get(order.status) ?? 0) + 1);
+    }
+    return counts;
+  }, [orders]);
 
   const filtered = orders.filter((o) => {
     if (statusFilter && o.status !== statusFilter) return false;
@@ -105,8 +102,6 @@ export function OrderList({ orders }: { orders: OrderRow[] }) {
     return true;
   });
 
-  const columns = getColumns();
-
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
@@ -114,7 +109,7 @@ export function OrderList({ orders }: { orders: OrderRow[] }) {
           const isActive = statusFilter === filter.value;
           const count =
             filter.value !== null
-              ? orders.filter((o) => o.status === filter.value).length
+              ? statusCounts.get(filter.value) ?? 0
               : null;
 
           return (
@@ -182,4 +177,3 @@ export function OrderList({ orders }: { orders: OrderRow[] }) {
     </div>
   );
 }
-

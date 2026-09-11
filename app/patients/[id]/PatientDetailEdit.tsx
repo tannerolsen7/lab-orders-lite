@@ -32,6 +32,7 @@ export function PatientDetailEdit({ patient }: { patient: Patient }) {
             <DialogDescription>Update patient information.</DialogDescription>
           </DialogHeader>
           <PatientForm
+            key={patient.id}
             patient={patient}
             action={(formData) => updatePatient(patient.id, formData)}
             onSuccess={() => {

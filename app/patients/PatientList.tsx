@@ -143,6 +143,7 @@ export function PatientList({ patients }: { patients: Patient[] }) {
             </DialogDescription>
           </DialogHeader>
           <PatientForm
+            key={editingPatient?.id ?? "new"}
             patient={editingPatient}
             action={
               editingPatient

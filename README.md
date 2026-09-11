@@ -2,6 +2,10 @@
 
 Staff-facing tool for managing patients, lab test catalogs, and lab orders. Built with Next.js App Router, Prisma + SQLite, and TypeScript.
 
+## Prerequisites
+
+- Node.js 20+ (see `.nvmrc`)
+
 ## Setup
 
 ```bash

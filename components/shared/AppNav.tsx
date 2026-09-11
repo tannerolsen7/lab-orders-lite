@@ -16,20 +16,30 @@ function NavItem({
   label,
   icon: Icon,
   active,
+  variant = "desktop",
 }: {
   href: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   active: boolean;
+  variant?: "desktop" | "mobile";
 }) {
   return (
     <Link
       href={href}
       className={cn(
-        "flex flex-col items-center gap-1 rounded-lg px-3 py-2 text-[9px] font-medium transition-colors",
-        active
-          ? "bg-white/10 text-sidebar-accent"
-          : "text-white/35 hover:text-white/60"
+        "flex flex-col items-center rounded-lg text-[9px] font-medium transition-colors",
+        variant === "desktop"
+          ? cn(
+              "gap-1 px-3 py-2",
+              active
+                ? "bg-white/10 text-sidebar-accent"
+                : "text-white/35 hover:text-white/60"
+            )
+          : cn(
+              "min-h-[44px] min-w-[44px] justify-center gap-0.5 px-3 py-1",
+              active ? "text-sidebar-accent" : "text-white/35"
+            )
       )}
     >
       <Icon className="h-5 w-5" />
@@ -65,19 +75,12 @@ export function MobileNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t bg-sidebar px-2 py-1 md:hidden">
       {navItems.map((item) => (
-        <Link
+        <NavItem
           key={item.href}
-          href={item.href}
-          className={cn(
-            "flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-lg px-3 py-1 text-[9px] font-medium transition-colors",
-            pathname.startsWith(item.href)
-              ? "text-sidebar-accent"
-              : "text-white/35"
-          )}
-        >
-          <item.icon className="h-5 w-5" />
-          <span>{item.label}</span>
-        </Link>
+          {...item}
+          active={pathname.startsWith(item.href)}
+          variant="mobile"
+        />
       ))}
     </nav>
   );

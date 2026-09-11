@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -29,8 +31,8 @@ export function DataTable<T extends { id: string }>({
     <Table>
       <TableHeader>
         <TableRow>
-          {columns.map((col) => (
-            <TableHead key={col.header}>{col.header}</TableHead>
+          {columns.map((col, i) => (
+            <TableHead key={i}>{col.header}</TableHead>
           ))}
         </TableRow>
       </TableHeader>
@@ -44,8 +46,8 @@ export function DataTable<T extends { id: string }>({
             )}
             onClick={() => onRowClick?.(row)}
           >
-            {columns.map((col) => (
-              <TableCell key={col.header}>
+            {columns.map((col, i) => (
+              <TableCell key={i}>
                 {col.cell
                   ? col.cell(row)
                   : col.accessorKey

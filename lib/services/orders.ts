@@ -81,6 +81,16 @@ export async function list(filters?: { status?: OrderStatus }) {
   });
 }
 
+export async function listByPatient(patientId: string) {
+  return prisma.order.findMany({
+    where: { patientId },
+    include: {
+      items: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
 export async function updateStatus(
   id: string,
   status: OrderStatus,

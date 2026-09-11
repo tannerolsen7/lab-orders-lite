@@ -1,6 +1,7 @@
 import type { Patient as PrismaPatient } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { isDateInPast, toUTCDate } from "@/lib/domain/dates";
+import { formatPhone } from "@/lib/domain/patient";
 import type { PatientInput } from "@/lib/validations/patient";
 
 export type PatientSummary = Pick<
@@ -25,7 +26,7 @@ function toPatientData(data: PatientInput) {
     firstName: data.firstName,
     lastName: data.lastName,
     dateOfBirth: toUTCDate(data.dateOfBirth),
-    phone: data.phone || null,
+    phone: data.phone ? (formatPhone(data.phone) ?? null) : null,
     email: data.email || null,
   };
 }

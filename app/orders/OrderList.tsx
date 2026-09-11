@@ -134,7 +134,7 @@ export function OrderList({ orders }: { orders: OrderRow[] }) {
           placeholder="Patient name..."
           value={search}
           onChange={setSearch}
-          className="ml-auto w-56"
+          className="w-full sm:ml-auto sm:w-56"
         />
       </div>
 

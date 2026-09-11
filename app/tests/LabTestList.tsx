@@ -176,12 +176,12 @@ export function LabTestList({ labTests }: { labTests: LabTest[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
         <SearchInput
           placeholder="Search by code or name..."
           value={search}
           onChange={setSearch}
-          className="flex-1"
+          className="w-full sm:w-auto sm:flex-1"
         />
         <label className="flex shrink-0 items-center gap-2 text-sm">
           <input
@@ -193,7 +193,7 @@ export function LabTestList({ labTests }: { labTests: LabTest[] }) {
           Show retired
         </label>
         <Button
-          className="shrink-0"
+          className="shrink-0 ml-auto sm:ml-0"
           onClick={() => router.push("/tests?action=new")}
         >
           <Plus className="mr-2 h-4 w-4" />

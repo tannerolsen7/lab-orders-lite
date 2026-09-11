@@ -22,6 +22,3 @@
 9. Throws when date of birth is in the future
 10. Throws when patient ID does not exist
 
-## Known gaps
-
-11. [CODE QUALITY] PatientForm exports a manual Patient type that duplicates Prisma's Patient model fields — should derive from Prisma types via `Pick<>` to track schema changes at compile time. Guard test in `PatientForm.typecheck.test.ts` catches field-level drift but not the structural issue of manual definition.

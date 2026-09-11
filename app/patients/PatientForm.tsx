@@ -4,16 +4,10 @@ import { useState } from "react";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/shared/FormField";
+import type { PatientSummary } from "@/lib/services/patients";
 import type { ActionResult } from "./actions";
 
-export type Patient = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
-  phone: string | null;
-  email: string | null;
-};
+export type Patient = PatientSummary;
 
 export function PatientForm({
   patient,

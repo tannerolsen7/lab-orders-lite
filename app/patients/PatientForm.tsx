@@ -75,7 +75,7 @@ export function PatientForm({
         label="Phone"
         name="phone"
         type="tel"
-        pattern="[0-9()+\-.\s]{7,}"
+        pattern="[0-9\(\)\+\-.\s]{7,}"
         title="Enter a valid phone number (at least 7 digits)"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}

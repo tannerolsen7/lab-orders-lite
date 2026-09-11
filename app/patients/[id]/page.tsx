@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { formatPatientName } from "@/lib/domain/patient";
+import { formatPatientName, formatPhone } from "@/lib/domain/patient";
 import { formatDate } from "@/lib/domain/dates";
 import * as patientService from "@/lib/services/patients";
 import { PatientDetailEdit } from "./PatientDetailEdit";
@@ -63,7 +63,7 @@ export default async function PatientDetailPage({
           <CardContent className="space-y-3">
             <div>
               <p className="text-sm text-muted-foreground">Phone</p>
-              <p className="truncate">{patient.phone ?? "Not provided"}</p>
+              <p className="truncate">{formatPhone(patient.phone) ?? "Not provided"}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Email</p>

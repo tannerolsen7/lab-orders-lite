@@ -26,8 +26,11 @@ import {
 } from "./actions";
 
 function StatusBadge({ active }: { active: boolean }) {
-  if (active) return null;
-  return <Badge variant="cancelled">Retired</Badge>;
+  return active ? (
+    <Badge variant="completed">Active</Badge>
+  ) : (
+    <Badge variant="cancelled">Retired</Badge>
+  );
 }
 
 function ActionButtons({

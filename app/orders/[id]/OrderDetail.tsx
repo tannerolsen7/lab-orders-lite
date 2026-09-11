@@ -301,10 +301,10 @@ export function OrderDetail({ order }: { order: OrderWithRelations }) {
             {order.items.map((item) => (
               <TableRow key={item.id}>
                 <TableCell className="font-mono text-xs font-semibold text-teal">
-                  {item.labTest.code}
+                  <span className="block max-w-24 truncate">{item.labTest.code}</span>
                 </TableCell>
                 <TableCell className="font-medium">
-                  {item.labTest.name}
+                  <span className="block max-w-48 truncate">{item.labTest.name}</span>
                 </TableCell>
                 <TableCell>
                   ${centsToDollars(item.priceCentsSnapshot)}

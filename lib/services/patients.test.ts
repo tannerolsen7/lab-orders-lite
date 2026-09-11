@@ -130,6 +130,23 @@ describe("patientService.create", () => {
     expect(patient.phone).toBe("555-0000");
   });
 
+  it("formats a 10-digit phone number on create", async () => {
+    const user = await createTestUser();
+
+    const patient = await create(
+      {
+        firstName: "Jane",
+        lastName: "Doe",
+        dateOfBirth: "1990-01-01",
+        phone: "5551234567",
+        email: "jane@test.com",
+      },
+      user.id
+    );
+
+    expect(patient.phone).toBe("(555) 123-4567");
+  });
+
   it("throws when date of birth is in the future", async () => {
     const user = await createTestUser();
 
@@ -212,6 +229,35 @@ describe("patientService.update", () => {
     );
 
     expect(updated.updatedById).toBe(updater.id);
+  });
+
+  it("formats a 10-digit phone number on update", async () => {
+    const user = await createTestUser();
+
+    const existing = await prisma.patient.create({
+      data: {
+        firstName: "Test",
+        lastName: "Patient",
+        dateOfBirth: new Date("1990-01-01"),
+        phone: "5550001111",
+        email: "test@test.com",
+        createdById: user.id,
+      },
+    });
+
+    const updated = await update(
+      existing.id,
+      {
+        firstName: "Test",
+        lastName: "Patient",
+        dateOfBirth: "1990-01-01",
+        phone: "5559876543",
+        email: "test@test.com",
+      },
+      user.id
+    );
+
+    expect(updated.phone).toBe("(555) 987-6543");
   });
 
   it("throws when date of birth is in the future", async () => {

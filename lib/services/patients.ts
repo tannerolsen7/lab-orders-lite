@@ -26,7 +26,7 @@ function toPatientData(data: PatientInput) {
     firstName: data.firstName,
     lastName: data.lastName,
     dateOfBirth: toUTCDate(data.dateOfBirth),
-    phone: data.phone ? (formatPhone(data.phone) ?? null) : null,
+    phone: data.phone ? formatPhone(data.phone) : null,
     email: data.email || null,
   };
 }

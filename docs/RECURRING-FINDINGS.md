@@ -53,6 +53,14 @@ to PITFALLS.md or ADRs when they reach 3+ occurrences.
 - Files: `app/orders/new/OrderCreateForm.tsx:78`
 - Description: `useMemo` wrapping `new Date()` freezes the timestamp at memo-creation time instead of using a fresh value each render. Fixed by reverting to direct computation.
 
+### dead-nullish-fallback
+
+- Category: TS Discipline
+- Occurrences: 1
+- Last seen: 2026-09-11
+- Files: `lib/services/patients.ts:29`
+- Description: `?? null` fallback after a function that can never return null/undefined for a non-null input. The return type is wider than the runtime behavior, making the fallback dead code. Fixed by removing the fallback.
+
 ## Resolved
 
 (None yet)

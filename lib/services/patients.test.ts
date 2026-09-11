@@ -130,7 +130,7 @@ describe("patientService.create", () => {
     expect(patient.phone).toBe("555-0000");
   });
 
-  it("formats a 10-digit phone number before storing", async () => {
+  it("formats a 10-digit phone number on create", async () => {
     const user = await createTestUser();
 
     const patient = await create(
@@ -231,7 +231,7 @@ describe("patientService.update", () => {
     expect(updated.updatedById).toBe(updater.id);
   });
 
-  it("formats a 10-digit phone number before storing", async () => {
+  it("formats a 10-digit phone number on update", async () => {
     const user = await createTestUser();
 
     const existing = await prisma.patient.create({

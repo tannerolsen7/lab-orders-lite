@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/shared/FormField";
 import type { PatientSummary } from "@/lib/services/patients";
-import type { ActionResult } from "./actions";
+import type { ActionResult } from "@/lib/actionResult";
 
 export type Patient = PatientSummary;
 
